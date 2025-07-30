@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useContext } from "react";
+import { useState, useEffect, useReducer, useContext } from "react";
 import openSocket from "../../services/socket-io";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";

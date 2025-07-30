@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import {
   BarChart,

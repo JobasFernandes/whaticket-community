@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useContext } from "react";
+import { useState, useEffect, useReducer, useContext } from "react";
 import openSocket from "../../services/socket-io";
 
 import { makeStyles } from "@material-ui/core/styles";

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import openSocket from "../../services/socket-io";
 
 import { makeStyles } from "@material-ui/core/styles";

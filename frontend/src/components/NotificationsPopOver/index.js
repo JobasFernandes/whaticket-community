@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { format } from "date-fns";
 import openSocket from "../../services/socket-io";
