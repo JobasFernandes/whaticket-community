@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Table,
   Column,
@@ -17,8 +18,8 @@ import {
 } from "sequelize-typescript";
 import { hash, compare } from "bcryptjs";
 import Ticket from "./Ticket";
-import Queue from "./Queue";
 import UserQueue from "./UserQueue";
+import Queue from "./Queue";
 import Whatsapp from "./Whatsapp";
 
 @Table

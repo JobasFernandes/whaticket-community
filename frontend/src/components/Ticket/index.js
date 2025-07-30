@@ -19,12 +19,12 @@ import toastError from "../../errors/toastError";
 
 const drawerWidth = 320;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
     height: "100%",
     position: "relative",
-    overflow: "hidden",
+    overflow: "hidden"
   },
 
   ticketInfo: {
@@ -32,8 +32,8 @@ const useStyles = makeStyles((theme) => ({
     flexBasis: "50%",
     [theme.breakpoints.down("sm")]: {
       maxWidth: "80%",
-      flexBasis: "80%",
-    },
+      flexBasis: "80%"
+    }
   },
   ticketActionButtons: {
     maxWidth: "50%",
@@ -42,8 +42,8 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       maxWidth: "100%",
       flexBasis: "100%",
-      marginBottom: "5px",
-    },
+      marginBottom: "5px"
+    }
   },
 
   mainWrapper: {
@@ -58,8 +58,8 @@ const useStyles = makeStyles((theme) => ({
     marginRight: -drawerWidth,
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
+      duration: theme.transitions.duration.leavingScreen
+    })
   },
 
   mainWrapperShift: {
@@ -67,10 +67,10 @@ const useStyles = makeStyles((theme) => ({
     borderBottomRightRadius: 0,
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
+      duration: theme.transitions.duration.enteringScreen
     }),
-    marginRight: 0,
-  },
+    marginRight: 0
+  }
 }));
 
 const Ticket = () => {
@@ -108,7 +108,7 @@ const Ticket = () => {
 
     socket.on("connect", () => socket.emit("joinChatBox", ticketId));
 
-    socket.on("ticket", (data) => {
+    socket.on("ticket", data => {
       if (data.action === "update") {
         setTicket(data.ticket);
       }
@@ -119,9 +119,9 @@ const Ticket = () => {
       }
     });
 
-    socket.on("contact", (data) => {
+    socket.on("contact", data => {
       if (data.action === "update") {
-        setContact((prevState) => {
+        setContact(prevState => {
           if (prevState.id === data.contact?.id) {
             return { ...prevState, ...data.contact };
           }
@@ -149,7 +149,7 @@ const Ticket = () => {
         variant="outlined"
         elevation={0}
         className={clsx(classes.mainWrapper, {
-          [classes.mainWrapperShift]: drawerOpen,
+          [classes.mainWrapperShift]: drawerOpen
         })}
       >
         <TicketHeader loading={loading}>

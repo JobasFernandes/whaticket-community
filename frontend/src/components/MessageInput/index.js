@@ -25,7 +25,7 @@ import {
   Hidden,
   Menu,
   MenuItem,
-  Switch,
+  Switch
 } from "@material-ui/core";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 
@@ -39,7 +39,7 @@ import toastError from "../../errors/toastError";
 
 const Mp3Recorder = new MicRecorder({ bitRate: 128 });
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   mainWrapper: {
     background: "#eee",
     display: "flex",
@@ -49,8 +49,8 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       position: "fixed",
       bottom: 0,
-      width: "100%",
-    },
+      width: "100%"
+    }
   },
 
   newMessageBox: {
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     display: "flex",
     padding: "7px",
-    alignItems: "center",
+    alignItems: "center"
   },
 
   messageInputWrapper: {
@@ -68,21 +68,21 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     borderRadius: 20,
     flex: 1,
-    position: "relative",
+    position: "relative"
   },
 
   messageInput: {
     paddingLeft: 10,
     flex: 1,
-    border: "none",
+    border: "none"
   },
 
   sendMessageIcons: {
-    color: "grey",
+    color: "grey"
   },
 
   uploadInput: {
-    display: "none",
+    display: "none"
   },
 
   viewMediaInputWrapper: {
@@ -92,14 +92,14 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "#eee",
-    borderTop: "1px solid rgba(0, 0, 0, 0.12)",
+    borderTop: "1px solid rgba(0, 0, 0, 0.12)"
   },
 
   emojiBox: {
     position: "absolute",
     bottom: 63,
     width: 40,
-    borderTop: "1px solid #e8e8e8",
+    borderTop: "1px solid #e8e8e8"
   },
 
   circleLoading: {
@@ -108,26 +108,26 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     top: "20%",
     left: "50%",
-    marginLeft: -12,
+    marginLeft: -12
   },
 
   audioLoading: {
     color: green[500],
-    opacity: "70%",
+    opacity: "70%"
   },
 
   recorderWrapper: {
     display: "flex",
     alignItems: "center",
-    alignContent: "middle",
+    alignContent: "middle"
   },
 
   cancelAudioIcon: {
-    color: "red",
+    color: "red"
   },
 
   sendAudioIcon: {
-    color: "green",
+    color: "green"
   },
 
   replyginMsgWrapper: {
@@ -137,7 +137,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     paddingTop: 8,
     paddingLeft: 73,
-    paddingRight: 7,
+    paddingRight: 7
   },
 
   replyginMsgContainer: {
@@ -147,7 +147,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "rgba(0, 0, 0, 0.05)",
     borderRadius: "7.5px",
     display: "flex",
-    position: "relative",
+    position: "relative"
   },
 
   replyginMsgBody: {
@@ -155,25 +155,25 @@ const useStyles = makeStyles((theme) => ({
     height: "auto",
     display: "block",
     whiteSpace: "pre-wrap",
-    overflow: "hidden",
+    overflow: "hidden"
   },
 
   replyginContactMsgSideColor: {
     flex: "none",
     width: "4px",
-    backgroundColor: "#35cd96",
+    backgroundColor: "#35cd96"
   },
 
   replyginSelfMsgSideColor: {
     flex: "none",
     width: "4px",
-    backgroundColor: "#6bcbef",
+    backgroundColor: "#6bcbef"
   },
 
   messageContactName: {
     display: "flex",
     color: "#6bcbef",
-    fontWeight: 500,
+    fontWeight: 500
   },
   messageQuickAnswersWrapper: {
     margin: 0,
@@ -194,11 +194,11 @@ const useStyles = makeStyles((theme) => ({
         maxHeight: "32px",
         "&:hover": {
           background: "#F1F1F1",
-          cursor: "pointer",
-        },
-      },
-    },
-  },
+          cursor: "pointer"
+        }
+      }
+    }
+  }
 }));
 
 const MessageInput = ({ ticketStatus }) => {
@@ -234,22 +234,22 @@ const MessageInput = ({ ticketStatus }) => {
     };
   }, [ticketId, setReplyingMessage]);
 
-  const handleChangeInput = (e) => {
+  const handleChangeInput = e => {
     setInputMessage(e.target.value);
     handleLoadQuickAnswer(e.target.value);
   };
 
-  const handleQuickAnswersClick = (value) => {
+  const handleQuickAnswersClick = value => {
     setInputMessage(value);
     setTypeBar(false);
   };
 
-  const handleAddEmoji = (e) => {
+  const handleAddEmoji = e => {
     let emoji = e.native;
-    setInputMessage((prevState) => prevState + emoji);
+    setInputMessage(prevState => prevState + emoji);
   };
 
-  const handleChangeMedias = (e) => {
+  const handleChangeMedias = e => {
     if (!e.target.files) {
       return;
     }
@@ -258,19 +258,19 @@ const MessageInput = ({ ticketStatus }) => {
     setMedias(selectedMedias);
   };
 
-  const handleInputPaste = (e) => {
+  const handleInputPaste = e => {
     if (e.clipboardData.files[0]) {
       setMedias([e.clipboardData.files[0]]);
     }
   };
 
-  const handleUploadMedia = async (e) => {
+  const handleUploadMedia = async e => {
     setLoading(true);
     e.preventDefault();
 
     const formData = new FormData();
     formData.append("fromMe", true);
-    medias.forEach((media) => {
+    medias.forEach(media => {
       formData.append("medias", media);
       formData.append("body", media.name);
     });
@@ -296,7 +296,7 @@ const MessageInput = ({ ticketStatus }) => {
       body: signMessage
         ? `*${user?.name}:*\n${inputMessage.trim()}`
         : inputMessage.trim(),
-      quotedMsg: replyingMessage,
+      quotedMsg: replyingMessage
     };
     try {
       await api.post(`/messages/${ticketId}`, message);
@@ -323,11 +323,11 @@ const MessageInput = ({ ticketStatus }) => {
     }
   };
 
-  const handleLoadQuickAnswer = async (value) => {
+  const handleLoadQuickAnswer = async value => {
     if (value && value.indexOf("/") === 0) {
       try {
         const { data } = await api.get("/quickAnswers/", {
-          params: { searchParam: inputMessage.substring(1) },
+          params: { searchParam: inputMessage.substring(1) }
         });
         setQuickAnswer(data.quickAnswers);
         if (data.quickAnswers.length > 0) {
@@ -377,21 +377,21 @@ const MessageInput = ({ ticketStatus }) => {
     }
   };
 
-  const handleOpenMenuClick = (event) => {
+  const handleOpenMenuClick = event => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuItemClick = (event) => {
+  const handleMenuItemClick = event => {
     setAnchorEl(null);
   };
 
-  const renderReplyingMessage = (message) => {
+  const renderReplyingMessage = message => {
     return (
       <div className={classes.replyginMsgWrapper}>
         <div className={classes.replyginMsgContainer}>
           <span
             className={clsx(classes.replyginContactMsgSideColor, {
-              [classes.replyginSelfMsgSideColor]: !message.fromMe,
+              [classes.replyginSelfMsgSideColor]: !message.fromMe
             })}
           ></span>
           <div className={classes.replyginMsgBody}>
@@ -421,7 +421,7 @@ const MessageInput = ({ ticketStatus }) => {
         <IconButton
           aria-label="cancel-upload"
           component="span"
-          onClick={(e) => setMedias([])}
+          onClick={e => setMedias([])}
         >
           <CancelIcon className={classes.sendMessageIcons} />
         </IconButton>
@@ -456,13 +456,13 @@ const MessageInput = ({ ticketStatus }) => {
               aria-label="emojiPicker"
               component="span"
               disabled={loading || recording || ticketStatus !== "open"}
-              onClick={(e) => setShowEmoji((prevState) => !prevState)}
+              onClick={e => setShowEmoji(prevState => !prevState)}
             >
               <MoodIcon className={classes.sendMessageIcons} />
             </IconButton>
             {showEmoji ? (
               <div className={classes.emojiBox}>
-                <ClickAwayListener onClickAway={(e) => setShowEmoji(false)}>
+                <ClickAwayListener onClickAway={e => setShowEmoji(false)}>
                   <Picker
                     perLine={16}
                     showPreview={false}
@@ -498,7 +498,7 @@ const MessageInput = ({ ticketStatus }) => {
                 <Switch
                   size="small"
                   checked={signMessage}
-                  onChange={(e) => {
+                  onChange={e => {
                     setSignMessage(e.target.checked);
                   }}
                   name="showAllTickets"
@@ -527,7 +527,7 @@ const MessageInput = ({ ticketStatus }) => {
                   aria-label="emojiPicker"
                   component="span"
                   disabled={loading || recording || ticketStatus !== "open"}
-                  onClick={(e) => setShowEmoji((prevState) => !prevState)}
+                  onClick={e => setShowEmoji(prevState => !prevState)}
                 >
                   <MoodIcon className={classes.sendMessageIcons} />
                 </IconButton>
@@ -560,7 +560,7 @@ const MessageInput = ({ ticketStatus }) => {
                     <Switch
                       size="small"
                       checked={signMessage}
-                      onChange={(e) => {
+                      onChange={e => {
                         setSignMessage(e.target.checked);
                       }}
                       name="showAllTickets"
@@ -573,7 +573,7 @@ const MessageInput = ({ ticketStatus }) => {
           </Hidden>
           <div className={classes.messageInputWrapper}>
             <InputBase
-              inputRef={(input) => {
+              inputRef={input => {
                 input && input.focus();
                 input && (inputRef.current = input);
               }}
@@ -588,10 +588,10 @@ const MessageInput = ({ ticketStatus }) => {
               value={inputMessage}
               onChange={handleChangeInput}
               disabled={recording || loading || ticketStatus !== "open"}
-              onPaste={(e) => {
+              onPaste={e => {
                 ticketStatus === "open" && handleInputPaste(e);
               }}
-              onKeyPress={(e) => {
+              onKeyPress={e => {
                 if (loading || e.shiftKey) return;
                 else if (e.key === "Enter") {
                   handleSendMessage();

@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Package lock files
+package-lock.json
+yarn.lock
+
+# Test coverage
+coverage/
+
+# Public assets (images, fonts, etc.)
+public/

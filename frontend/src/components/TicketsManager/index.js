@@ -18,8 +18,9 @@ import { AuthContext } from "../../context/Auth/AuthContext";
 import { Can } from "../Can";
 import TicketsQueueSelect from "../TicketsQueueSelect";
 import { Button } from "@material-ui/core";
+import { CircularProgress, Box } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   ticketsWrapper: {
     position: "relative",
     display: "flex",
@@ -29,27 +30,27 @@ const useStyles = makeStyles((theme) => ({
     borderTopRightRadius: 0,
     borderBottomRightRadius: 0,
     backgroundColor: theme.palette.background.default,
-    color: theme.palette.text.primary,
+    color: theme.palette.text.primary
   },
   tabsHeader: {
     flex: "none",
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper
   },
   settingsIcon: {
     alignSelf: "center",
     marginLeft: "auto",
-    padding: 8,
+    padding: 8
   },
   tab: {
     minWidth: 120,
-    width: 120,
+    width: 120
   },
   ticketOptionsBox: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     background: theme.palette.background.paper,
-    padding: theme.spacing(1),
+    padding: theme.spacing(1)
   },
   serachInputWrapper: {
     flex: 1,
@@ -57,30 +58,30 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     borderRadius: 40,
     padding: 4,
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
   searchIcon: {
     color: "grey",
     marginLeft: 6,
     marginRight: 6,
-    alignSelf: "center",
+    alignSelf: "center"
   },
   searchInput: {
     flex: 1,
     border: "none",
     borderRadius: 30,
-    color: theme.palette.text.primary, 
-    backgroundColor: theme.palette.background.default,
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.default
   },
   badge: {
-    right: "-10px",
+    right: "-10px"
   },
   show: {
-    display: "block",
+    display: "block"
   },
   hide: {
-    display: "none !important",
-  },
+    display: "none !important"
+  }
 }));
 
 const TicketsManager = () => {
@@ -91,18 +92,27 @@ const TicketsManager = () => {
   const [newTicketModalOpen, setNewTicketModalOpen] = useState(false);
   const [showAllTickets, setShowAllTickets] = useState(false);
   const searchInputRef = useRef();
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
   const [openCount, setOpenCount] = useState(0);
   const [pendingCount, setPendingCount] = useState(0);
-  const userQueueIds = user.queues.map((q) => q.id);
-  const [selectedQueueIds, setSelectedQueueIds] = useState(userQueueIds || []);
+  const userQueueIds = user?.queues?.map(q => q.id) || [];
+  const [selectedQueueIds, setSelectedQueueIds] = useState(userQueueIds);
+  const userQueues = user?.queues;
+  const userProfile = user?.profile;
 
   useEffect(() => {
-    if (user.profile.toUpperCase() === "ADMIN") {
+    if (userProfile?.toUpperCase() === "ADMIN") {
       setShowAllTickets(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userProfile]);
+
+  useEffect(() => {
+    if (userQueues) {
+      const newUserQueueIds = userQueues.map(q => q.id);
+      setSelectedQueueIds(newUserQueueIds);
+    }
+  }, [userQueues]);
 
   useEffect(() => {
     if (tab === "search") {
@@ -113,7 +123,7 @@ const TicketsManager = () => {
 
   let searchTimeout;
 
-  const handleSearch = (e) => {
+  const handleSearch = e => {
     const searchedTerm = e.target.value.toLowerCase();
 
     clearTimeout(searchTimeout);
@@ -137,17 +147,32 @@ const TicketsManager = () => {
     setTabOpen(newValue);
   };
 
-  const applyPanelStyle = (status) => {
+  const applyPanelStyle = status => {
     if (tabOpen !== status) {
       return { width: 0, height: 0 };
     }
   };
 
+  // Don't render if user is not loaded yet
+  if (loading || !user || !user.id) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100%"
+        minHeight="200px"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <Paper elevation={0} variant="outlined" className={classes.ticketsWrapper}>
       <NewTicketModal
         modalOpen={newTicketModalOpen}
-        onClose={(e) => setNewTicketModalOpen(false)}
+        onClose={e => setNewTicketModalOpen(false)}
       />
       <Paper elevation={0} square className={classes.tabsHeader}>
         <Tabs
@@ -200,7 +225,7 @@ const TicketsManager = () => {
               {i18n.t("ticketsManager.buttons.newTicket")}
             </Button>
             <Can
-              role={user.profile}
+              role={userProfile}
               perform="tickets-manager:showall"
               yes={() => (
                 <FormControlLabel
@@ -211,7 +236,7 @@ const TicketsManager = () => {
                       size="small"
                       checked={showAllTickets}
                       onChange={() =>
-                        setShowAllTickets((prevState) => !prevState)
+                        setShowAllTickets(prevState => !prevState)
                       }
                       name="showAllTickets"
                       color="primary"
@@ -225,8 +250,8 @@ const TicketsManager = () => {
         <TicketsQueueSelect
           style={{ marginLeft: 6 }}
           selectedQueueIds={selectedQueueIds}
-          userQueues={user?.queues}
-          onChange={(values) => setSelectedQueueIds(values)}
+          userQueues={userQueues}
+          onChange={values => setSelectedQueueIds(values)}
         />
       </Paper>
       <TabPanel value={tab} name="open" className={classes.ticketsWrapper}>
@@ -243,6 +268,7 @@ const TicketsManager = () => {
                 className={classes.badge}
                 badgeContent={openCount}
                 color="primary"
+                overlap="rectangular"
               >
                 {i18n.t("ticketsList.assignedHeader")}
               </Badge>
@@ -255,6 +281,7 @@ const TicketsManager = () => {
                 className={classes.badge}
                 badgeContent={pendingCount}
                 color="secondary"
+                overlap="rectangular"
               >
                 {i18n.t("ticketsList.pendingHeader")}
               </Badge>
@@ -267,13 +294,13 @@ const TicketsManager = () => {
             status="open"
             showAll={showAllTickets}
             selectedQueueIds={selectedQueueIds}
-            updateCount={(val) => setOpenCount(val)}
+            updateCount={val => setOpenCount(val)}
             style={applyPanelStyle("open")}
           />
           <TicketsList
             status="pending"
             selectedQueueIds={selectedQueueIds}
-            updateCount={(val) => setPendingCount(val)}
+            updateCount={val => setPendingCount(val)}
             style={applyPanelStyle("pending")}
           />
         </Paper>

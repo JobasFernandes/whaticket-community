@@ -10,28 +10,28 @@ import Ticket from "../../components/Ticket/";
 import { i18n } from "../../translate/i18n";
 import Hidden from "@material-ui/core/Hidden";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   chatContainer: {
     flex: 1,
     // // backgroundColor: "#eee",
     // padding: theme.spacing(4),
     height: `calc(100% - 48px)`,
     overflowY: "hidden",
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.default
   },
 
   chatPapper: {
     // backgroundColor: "red",
     display: "flex",
     height: "100%",
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper
   },
 
   contactsWrapper: {
     display: "flex",
     height: "100%",
     flexDirection: "column",
-    overflowY: "hidden",
+    overflowY: "hidden"
   },
   contactsWrapperSmall: {
     display: "flex",
@@ -39,13 +39,13 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     overflowY: "hidden",
     [theme.breakpoints.down("sm")]: {
-      display: "none",
-    },
+      display: "none"
+    }
   },
   messagessWrapper: {
     display: "flex",
     height: "100%",
-    flexDirection: "column",
+    flexDirection: "column"
   },
   welcomeMsg: {
     backgroundColor: theme.palette.background.paper,
@@ -54,14 +54,14 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     height: "100%",
     textAlign: "center",
-    borderRadius: 0,
+    borderRadius: 0
   },
   ticketsManager: {},
   ticketsManagerClosed: {
     [theme.breakpoints.down("sm")]: {
-      display: "none",
-    },
-  },
+      display: "none"
+    }
+  }
 }));
 
 const Chat = () => {

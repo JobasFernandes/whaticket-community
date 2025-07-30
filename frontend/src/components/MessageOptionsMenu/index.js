@@ -26,7 +26,7 @@ const MessageOptionsMenu = ({ message, menuOpen, handleClose, anchorEl }) => {
     handleClose();
   };
 
-  const handleOpenConfirmationModal = (e) => {
+  const handleOpenConfirmationModal = e => {
     setConfirmationOpen(true);
     handleClose();
   };
@@ -46,11 +46,11 @@ const MessageOptionsMenu = ({ message, menuOpen, handleClose, anchorEl }) => {
         getContentAnchorEl={null}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "right",
+          horizontal: "right"
         }}
         transformOrigin={{
           vertical: "top",
-          horizontal: "right",
+          horizontal: "right"
         }}
         open={menuOpen}
         onClose={handleClose}

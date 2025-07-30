@@ -42,7 +42,7 @@ function ListItemLink(props) {
   );
 }
 
-const MainListItems = (props) => {
+const MainListItems = props => {
   const { drawerClose } = props;
   const { whatsApps } = useContext(WhatsAppsContext);
   const { user } = useContext(AuthContext);
@@ -51,7 +51,7 @@ const MainListItems = (props) => {
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (whatsApps.length > 0) {
-        const offlineWhats = whatsApps.filter((whats) => {
+        const offlineWhats = whatsApps.filter(whats => {
           return (
             whats.status === "qrcode" ||
             whats.status === "PAIRING" ||
@@ -81,7 +81,11 @@ const MainListItems = (props) => {
         to="/connections"
         primary={i18n.t("mainDrawer.listItems.connections")}
         icon={
-          <Badge badgeContent={connectionWarning ? "!" : 0} color="error">
+          <Badge
+            badgeContent={connectionWarning ? "!" : 0}
+            color="error"
+            overlap="rectangular"
+          >
             <SyncAltIcon />
           </Badge>
         }

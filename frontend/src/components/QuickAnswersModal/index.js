@@ -12,7 +12,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  CircularProgress,
+  CircularProgress
 } from "@material-ui/core";
 import { green } from "@material-ui/core/colors";
 import { i18n } from "../../translate/i18n";
@@ -20,17 +20,17 @@ import { i18n } from "../../translate/i18n";
 import api from "../../services/api";
 import toastError from "../../errors/toastError";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
-    flexWrap: "wrap",
+    flexWrap: "wrap"
   },
   textField: {
     marginRight: theme.spacing(1),
-    width: "100%",
+    width: "100%"
   },
 
   btnWrapper: {
-    position: "relative",
+    position: "relative"
   },
 
   buttonProgress: {
@@ -39,11 +39,11 @@ const useStyles = makeStyles((theme) => ({
     top: "50%",
     left: "50%",
     marginTop: -12,
-    marginLeft: -12,
+    marginLeft: -12
   },
   textQuickAnswerContainer: {
-    width: "100%",
-  },
+    width: "100%"
+  }
 }));
 
 const QuickAnswerSchema = Yup.object().shape({
@@ -54,7 +54,7 @@ const QuickAnswerSchema = Yup.object().shape({
   message: Yup.string()
     .min(8, "Too Short!")
     .max(30000, "Too Long!")
-    .required("Required"),
+    .required("Required")
 });
 
 const QuickAnswersModal = ({
@@ -62,14 +62,14 @@ const QuickAnswersModal = ({
   onClose,
   quickAnswerId,
   initialValues,
-  onSave,
+  onSave
 }) => {
   const classes = useStyles();
   const isMounted = useRef(true);
 
   const initialState = {
     shortcut: "",
-    message: "",
+    message: ""
   };
 
   const [quickAnswer, setQuickAnswer] = useState(initialState);
@@ -83,7 +83,7 @@ const QuickAnswersModal = ({
   useEffect(() => {
     const fetchQuickAnswer = async () => {
       if (initialValues) {
-        setQuickAnswer((prevState) => {
+        setQuickAnswer(prevState => {
           return { ...prevState, ...initialValues };
         });
       }
@@ -108,7 +108,7 @@ const QuickAnswersModal = ({
     setQuickAnswer(initialState);
   };
 
-  const handleSaveQuickAnswer = async (values) => {
+  const handleSaveQuickAnswer = async values => {
     try {
       if (quickAnswerId) {
         await api.put(`/quickAnswers/${quickAnswerId}`, values);
@@ -179,7 +179,7 @@ const QuickAnswersModal = ({
                     margin="dense"
                     className={classes.textField}
                     multiline
-                    rows={5}
+                    minRows={5}
                     fullWidth
                   />
                 </div>

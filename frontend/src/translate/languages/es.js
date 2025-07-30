@@ -6,39 +6,39 @@ const messages = {
         toasts: {
           success:
             "¡El usuario ha sido creado satisfactoriamente! ¡Ahora inicia sesión!",
-          fail: "Error creando el usuario. Verifica la data reportada.",
+          fail: "Error creando el usuario. Verifica la data reportada."
         },
         form: {
           name: "Nombre",
           email: "Correo Electrónico",
-          password: "Contraseña",
+          password: "Contraseña"
         },
         buttons: {
           submit: "Regístrate",
-          login: "¿Ya tienes una cuenta? ¡Inicia sesión!",
-        },
+          login: "¿Ya tienes una cuenta? ¡Inicia sesión!"
+        }
       },
       login: {
         title: "Inicio de Sesión",
         form: {
           email: "Correo Electrónico",
-          password: "Contraseña",
+          password: "Contraseña"
         },
         buttons: {
           submit: "Ingresa",
-          register: "¿No tienes cuenta? ¡Regístrate!",
-        },
+          register: "¿No tienes cuenta? ¡Regístrate!"
+        }
       },
       auth: {
         toasts: {
-          success: "¡Inicio de sesión exitoso!",
-        },
+          success: "¡Inicio de sesión exitoso!"
+        }
       },
       dashboard: {
         charts: {
           perDay: {
-            title: "Tickets hoy: ",
-          },
+            title: "Tickets hoy: "
+          }
         },
         messages: {
           inAttendance: {
@@ -56,13 +56,13 @@ const messages = {
         title: "Conexiones",
         toasts: {
           deleted:
-            "¡La conexión de WhatsApp ha sido borrada satisfactoriamente!",
+            "¡La conexión de WhatsApp ha sido borrada satisfactoriamente!"
         },
         confirmationModal: {
           deleteTitle: "Borrar",
           deleteMessage: "¿Estás seguro? Este proceso no puede ser revertido.",
           disconnectTitle: "Desconectar",
-          disconnectMessage: "Estás seguro? Deberá volver a leer el código QR",
+          disconnectMessage: "Estás seguro? Deberá volver a leer el código QR"
         },
         buttons: {
           add: "Agrega WhatsApp",
@@ -70,27 +70,27 @@ const messages = {
           tryAgain: "Inténtalo de nuevo",
           qrcode: "QR CODE",
           newQr: "Nuevo QR CODE",
-          connecting: "Conectando",
+          connecting: "Conectando"
         },
         toolTips: {
           disconnected: {
             title: "No se pudo iniciar la sesión de WhatsApp",
             content:
-              "Asegúrese de que su teléfono celular esté conectado a Internet y vuelva a intentarlo o solicite un nuevo código QR",
+              "Asegúrese de que su teléfono celular esté conectado a Internet y vuelva a intentarlo o solicite un nuevo código QR"
           },
           qrcode: {
             title: "Esperando la lectura del código QR",
             content:
-              "Haga clic en el botón 'CÓDIGO QR' y lea el Código QR con su teléfono celular para iniciar la sesión",
+              "Haga clic en el botón 'CÓDIGO QR' y lea el Código QR con su teléfono celular para iniciar la sesión"
           },
           connected: {
-            title: "Conexión establecida",
+            title: "Conexión establecida"
           },
           timeout: {
             title: "Se perdió la conexión con el teléfono celular",
             content:
-              "Asegúrese de que su teléfono celular esté conectado a Internet y que WhatsApp esté abierto, o haga clic en el botón 'Desconectar' para obtener un nuevo código QR",
-          },
+              "Asegúrese de que su teléfono celular esté conectado a Internet y que WhatsApp esté abierto, o haga clic en el botón 'Desconectar' para obtener un nuevo código QR"
+          }
         },
         table: {
           name: "Nombre",
@@ -98,32 +98,32 @@ const messages = {
           lastUpdate: "Última Actualización",
           default: "Por Defecto",
           actions: "Acciones",
-          session: "Sesión",
-        },
+          session: "Sesión"
+        }
       },
       whatsappModal: {
         title: {
           add: "Agrega WhatsApp",
-          edit: "Edita WhatsApp",
+          edit: "Edita WhatsApp"
         },
         form: {
           name: "Nombre",
-          default: "Por Defecto",
+          default: "Por Defecto"
         },
         buttons: {
           okAdd: "Agregar",
           okEdit: "Guardar",
-          cancel: "Cancelar",
+          cancel: "Cancelar"
         },
-        success: "WhatsApp guardado satisfactoriamente.",
+        success: "WhatsApp guardado satisfactoriamente."
       },
       qrCode: {
-        message: "Lée el código QR para empezar la sesión.",
+        message: "Lée el código QR para empezar la sesión."
       },
       contacts: {
         title: "Contactos",
         toasts: {
-          deleted: "¡Contacto borrado satisfactoriamente!",
+          deleted: "¡Contacto borrado satisfactoriamente!"
         },
         searchPlaceholder: "Buscar...",
         confirmationModal: {
@@ -132,23 +132,23 @@ const messages = {
           deleteMessage:
             "¿Estás seguro que deseas borrar este contacto? Todos los tickets relacionados se perderán.",
           importMessage:
-            "¿Quieres importar todos los contactos desde tu teléfono?",
+            "¿Quieres importar todos los contactos desde tu teléfono?"
         },
         buttons: {
           import: "Importar Contactos",
-          add: "Agregar Contacto",
+          add: "Agregar Contacto"
         },
         table: {
           name: "Nombre",
           whatsapp: "WhatsApp",
           email: "Correo Electrónico",
-          actions: "Acciones",
-        },
+          actions: "Acciones"
+        }
       },
       contactModal: {
         title: {
           add: "Agregar contacto",
-          edit: "Editar contacto",
+          edit: "Editar contacto"
         },
         form: {
           mainInfo: "Detalles del contacto",
@@ -157,96 +157,96 @@ const messages = {
           number: "Número de Whatsapp",
           email: "Correo Electrónico",
           extraName: "Nombre del Campo",
-          extraValue: "Valor",
+          extraValue: "Valor"
         },
         buttons: {
           addExtraInfo: "Agregar información",
           okAdd: "Agregar",
           okEdit: "Guardar",
-          cancel: "Cancelar",
+          cancel: "Cancelar"
         },
-        success: "Contacto guardado satisfactoriamente.",
+        success: "Contacto guardado satisfactoriamente."
       },
       quickAnswersModal: {
         title: {
           add: "Agregar respuesta rápida",
-          edit: "Editar respuesta rápida",
+          edit: "Editar respuesta rápida"
         },
         form: {
           shortcut: "Atajo",
-          message: "Respuesta rápida",
+          message: "Respuesta rápida"
         },
         buttons: {
           okAdd: "Agregar",
           okEdit: "Guardar",
-          cancel: "Cancelar",
+          cancel: "Cancelar"
         },
-        success: "Respuesta rápida guardada correctamente.",
+        success: "Respuesta rápida guardada correctamente."
       },
       queueModal: {
         title: {
           add: "Agregar cola",
-          edit: "Editar cola",
+          edit: "Editar cola"
         },
         form: {
           name: "Nombre",
           color: "Color",
-          greetingMessage: "Mensaje de saludo",
+          greetingMessage: "Mensaje de saludo"
         },
         buttons: {
           okAdd: "Añadir",
           okEdit: "Ahorrar",
-          cancel: "Cancelar",
-        },
+          cancel: "Cancelar"
+        }
       },
       userModal: {
         title: {
           add: "Agregar usuario",
-          edit: "Editar usuario",
+          edit: "Editar usuario"
         },
         form: {
           name: "Nombre",
           email: "Correo Electrónico",
           password: "Contraseña",
           profile: "Perfil",
-          whatsapp: "Conexión estándar",
+          whatsapp: "Conexión estándar"
         },
         buttons: {
           okAdd: "Agregar",
           okEdit: "Guardar",
-          cancel: "Cancelar",
+          cancel: "Cancelar"
         },
-        success: "Usuario guardado satisfactoriamente.",
+        success: "Usuario guardado satisfactoriamente."
       },
       chat: {
-        noTicketMessage: "Selecciona un ticket para empezar a chatear.",
+        noTicketMessage: "Selecciona un ticket para empezar a chatear."
       },
       ticketsManager: {
         buttons: {
-          newTicket: "Nuevo",
-        },
+          newTicket: "Nuevo"
+        }
       },
       ticketsQueueSelect: {
-        placeholder: "Linhas",
+        placeholder: "Linhas"
       },
       tickets: {
         toasts: {
-          deleted: "El ticket en el que estabas ha sido borrado.",
+          deleted: "El ticket en el que estabas ha sido borrado."
         },
         notification: {
-          message: "Mensaje de",
+          message: "Mensaje de"
         },
         tabs: {
           open: { title: "Bandeja" },
           closed: { title: "Resueltos" },
-          search: { title: "Buscar" },
+          search: { title: "Buscar" }
         },
         search: {
-          placeholder: "Buscar tickets y mensajes.",
+          placeholder: "Buscar tickets y mensajes."
         },
         buttons: {
-          showAll: "Todos",
-        },
+          showAll: "Todos"
+        }
       },
       transferTicketModal: {
         title: "Transferir Ticket",
@@ -258,8 +258,8 @@ const messages = {
         noOptions: "No se encontraron usuarios con ese nombre",
         buttons: {
           ok: "Transferir",
-          cancel: "Cancelar",
-        },
+          cancel: "Cancelar"
+        }
       },
       ticketsList: {
         pendingHeader: "Cola",
@@ -269,8 +269,8 @@ const messages = {
         noTicketsMessage:
           "No se encontraron tickets con este estado o término de búsqueda",
         buttons: {
-          accept: "Acceptar",
-        },
+          accept: "Acceptar"
+        }
       },
       newTicketModal: {
         title: "Crear Ticket",
@@ -278,8 +278,8 @@ const messages = {
         add: "Añadir",
         buttons: {
           ok: "Guardar",
-          cancel: "Cancelar",
-        },
+          cancel: "Cancelar"
+        }
       },
       mainDrawer: {
         listItems: {
@@ -291,17 +291,17 @@ const messages = {
           queues: "Linhas",
           administration: "Administración",
           users: "Usuarios",
-          settings: "Configuración",
+          settings: "Configuración"
         },
         appBar: {
           user: {
             profile: "Perfil",
-            logout: "Cerrar Sesión",
-          },
-        },
+            logout: "Cerrar Sesión"
+          }
+        }
       },
       notifications: {
-        noTickets: "Sin notificaciones.",
+        noTickets: "Sin notificaciones."
       },
       queues: {
         title: "Linhas",
@@ -309,39 +309,39 @@ const messages = {
           name: "Nombre",
           color: "Color",
           greeting: "Mensaje de saludo",
-          actions: "Comportamiento",
+          actions: "Comportamiento"
         },
         buttons: {
-          add: "Agregar cola",
+          add: "Agregar cola"
         },
         confirmationModal: {
           deleteTitle: "Eliminar",
           deleteMessage:
-            "¿Estás seguro? ¡Esta acción no se puede revertir! Los tickets en esa cola seguirán existiendo, pero ya no tendrán ninguna cola asignada.",
-        },
+            "¿Estás seguro? ¡Esta acción no se puede revertir! Los tickets en esa cola seguirán existiendo, pero ya no tendrán ninguna cola asignada."
+        }
       },
       queueSelect: {
-        inputLabel: "Linhas",
+        inputLabel: "Linhas"
       },
       quickAnswers: {
         title: "Respuestas rápidas",
         table: {
           shortcut: "Atajo",
           message: "Respuesta rápida",
-          actions: "Acciones",
+          actions: "Acciones"
         },
         buttons: {
-          add: "Agregar respuesta rápida",
+          add: "Agregar respuesta rápida"
         },
         toasts: {
-          deleted: "Respuesta rápida eliminada correctamente",
+          deleted: "Respuesta rápida eliminada correctamente"
         },
         searchPlaceholder: "Buscar ...",
         confirmationModal: {
           deleteTitle:
             "¿Está seguro de que desea eliminar esta respuesta rápida?",
-          deleteMessage: "Esta acción no se puede deshacer.",
-        },
+          deleteMessage: "Esta acción no se puede deshacer."
+        }
       },
       users: {
         title: "Usuarios",
@@ -350,19 +350,19 @@ const messages = {
           email: "Correo Electrónico",
           profile: "Perfil",
           whatsapp: "Conexión estándar",
-          actions: "Acciones",
+          actions: "Acciones"
         },
         buttons: {
-          add: "Agregar usuario",
+          add: "Agregar usuario"
         },
         toasts: {
-          deleted: "Usuario borrado satisfactoriamente.",
+          deleted: "Usuario borrado satisfactoriamente."
         },
         confirmationModal: {
           deleteTitle: "Borrar",
           deleteMessage:
-            "Toda la información del usuario se perderá. Los tickets abiertos de los usuarios se moverán a la cola.",
-        },
+            "Toda la información del usuario se perderá. Los tickets abiertos de los usuarios se moverán a la cola."
+        }
       },
       settings: {
         success: "Configuración guardada satisfactoriamente.",
@@ -372,10 +372,10 @@ const messages = {
             name: "Creación de usuarios",
             options: {
               enabled: "Habilitado",
-              disabled: "Deshabilitado",
-            },
-          },
-        },
+              disabled: "Deshabilitado"
+            }
+          }
+        }
       },
       messagesList: {
         header: {
@@ -384,22 +384,23 @@ const messages = {
             return: "Devolver",
             resolve: "Resolver",
             reopen: "Reabrir",
-            accept: "Aceptar",
-          },
-        },
+            accept: "Aceptar"
+          }
+        }
       },
       messagesInput: {
-        placeholderOpen: "Escriba un mensaje o presione '' / '' para usar las respuestas rápidas registradas",
+        placeholderOpen:
+          "Escriba un mensaje o presione '' / '' para usar las respuestas rápidas registradas",
         placeholderClosed:
           "Vuelva a abrir o acepte este ticket para enviar un mensaje.",
-        signMessage: "Firmar",
+        signMessage: "Firmar"
       },
       contactDrawer: {
         header: "Detalles del contacto",
         buttons: {
-          edit: "Editar contacto",
+          edit: "Editar contacto"
         },
-        extraInfo: "Otra información",
+        extraInfo: "Otra información"
       },
       ticketOptionsMenu: {
         delete: "Borrar",
@@ -408,26 +409,26 @@ const messages = {
           title: "¿Borrar ticket #",
           titleFrom: "del contacto ",
           message:
-            "¡Atención! Todos los mensajes Todos los mensajes relacionados con el ticket se perderán.",
+            "¡Atención! Todos los mensajes Todos los mensajes relacionados con el ticket se perderán."
         },
         buttons: {
           delete: "Borrar",
-          cancel: "Cancelar",
-        },
+          cancel: "Cancelar"
+        }
       },
       confirmationModal: {
         buttons: {
           confirm: "Ok",
-          cancel: "Cancelar",
-        },
+          cancel: "Cancelar"
+        }
       },
       messageOptionsMenu: {
         delete: "Borrar",
         reply: "Responder",
         confirmationModal: {
           title: "¿Borrar mensaje?",
-          message: "Esta acción no puede ser revertida.",
-        },
+          message: "Esta acción no puede ser revertida."
+        }
       },
       backendErrors: {
         ERR_NO_OTHER_WHATSAPP:
@@ -464,10 +465,10 @@ const messages = {
         ERR_QUEUE_COLOR_ALREADY_EXISTS:
           "Este color ya está en uso, elija otro.",
         ERR_WAPP_GREETING_REQUIRED:
-          "El mensaje de saludo es obligatorio cuando hay más de una cola.",
-      },
-    },
-  },
+          "El mensaje de saludo es obligatorio cuando hay más de una cola."
+      }
+    }
+  }
 };
 
 export { messages };

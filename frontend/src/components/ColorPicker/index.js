@@ -56,10 +56,10 @@ const ColorPicker = ({ onChange, currentColor, handleClose, open }) => {
     "#0C797D",
     "#0062B1",
     "#653294",
-    "#AB149E",
+    "#AB149E"
   ];
 
-  const handleChange = (color) => {
+  const handleChange = color => {
     setSelectedColor(color.hex);
     handleClose();
   };
@@ -70,7 +70,7 @@ const ColorPicker = ({ onChange, currentColor, handleClose, open }) => {
       aria-labelledby="simple-dialog-title"
       open={open}
       maxWidth="xs"
-      paperFullWidth
+      fullWidth
     >
       <GithubPicker
         width={"100%"}
@@ -78,7 +78,7 @@ const ColorPicker = ({ onChange, currentColor, handleClose, open }) => {
         color={selectedColor}
         colors={colors}
         onChange={handleChange}
-        onChangeComplete={(color) => onChange(color.hex)}
+        onChangeComplete={color => onChange(color.hex)}
       />
     </Dialog>
   );

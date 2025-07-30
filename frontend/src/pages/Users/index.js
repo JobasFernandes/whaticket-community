@@ -35,8 +35,8 @@ const reducer = (state, action) => {
     const users = action.payload;
     const newUsers = [];
 
-    users.forEach((user) => {
-      const userIndex = state.findIndex((u) => u.id === user.id);
+    users.forEach(user => {
+      const userIndex = state.findIndex(u => u.id === user.id);
       if (userIndex !== -1) {
         state[userIndex] = user;
       } else {
@@ -49,7 +49,7 @@ const reducer = (state, action) => {
 
   if (action.type === "UPDATE_USERS") {
     const user = action.payload;
-    const userIndex = state.findIndex((u) => u.id === user.id);
+    const userIndex = state.findIndex(u => u.id === user.id);
 
     if (userIndex !== -1) {
       state[userIndex] = user;
@@ -62,7 +62,7 @@ const reducer = (state, action) => {
   if (action.type === "DELETE_USER") {
     const userId = action.payload;
 
-    const userIndex = state.findIndex((u) => u.id === userId);
+    const userIndex = state.findIndex(u => u.id === userId);
     if (userIndex !== -1) {
       state.splice(userIndex, 1);
     }
@@ -74,13 +74,13 @@ const reducer = (state, action) => {
   }
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   mainPaper: {
     flex: 1,
     padding: theme.spacing(1),
     overflowY: "scroll",
-    ...theme.scrollbarStyles,
-  },
+    ...theme.scrollbarStyles
+  }
 }));
 
 const Users = () => {
@@ -107,7 +107,7 @@ const Users = () => {
       const fetchUsers = async () => {
         try {
           const { data } = await api.get("/users/", {
-            params: { searchParam, pageNumber },
+            params: { searchParam, pageNumber }
           });
           dispatch({ type: "LOAD_USERS", payload: data.users });
           setHasMore(data.hasMore);
@@ -123,8 +123,9 @@ const Users = () => {
 
   useEffect(() => {
     const socket = openSocket();
+    if (!socket) return;
 
-    socket.on("user", (data) => {
+    socket.on("user", data => {
       if (data.action === "update" || data.action === "create") {
         dispatch({ type: "UPDATE_USERS", payload: data.user });
       }
@@ -149,16 +150,16 @@ const Users = () => {
     setUserModalOpen(false);
   };
 
-  const handleSearch = (event) => {
+  const handleSearch = event => {
     setSearchParam(event.target.value.toLowerCase());
   };
 
-  const handleEditUser = (user) => {
+  const handleEditUser = user => {
     setSelectedUser(user);
     setUserModalOpen(true);
   };
 
-  const handleDeleteUser = async (userId) => {
+  const handleDeleteUser = async userId => {
     try {
       await api.delete(`/users/${userId}`);
       toast.success(i18n.t("users.toasts.deleted"));
@@ -171,10 +172,10 @@ const Users = () => {
   };
 
   const loadMore = () => {
-    setPageNumber((prevState) => prevState + 1);
+    setPageNumber(prevState => prevState + 1);
   };
 
-  const handleScroll = (e) => {
+  const handleScroll = e => {
     if (!hasMore || loading) return;
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
     if (scrollHeight - (scrollTop + 100) < clientHeight) {
@@ -216,7 +217,7 @@ const Users = () => {
                 <InputAdornment position="start">
                   <SearchIcon style={{ color: "gray" }} />
                 </InputAdornment>
-              ),
+              )
             }}
           />
           <Button
@@ -245,7 +246,7 @@ const Users = () => {
               </TableCell>
               <TableCell align="center">
                 {i18n.t("users.table.whatsapp")}
-              </TableCell>              
+              </TableCell>
               <TableCell align="center">
                 {i18n.t("users.table.actions")}
               </TableCell>
@@ -253,7 +254,7 @@ const Users = () => {
           </TableHead>
           <TableBody>
             <>
-              {users.map((user) => (
+              {users.map(user => (
                 <TableRow key={user.id}>
                   <TableCell align="center">{user.name}</TableCell>
                   <TableCell align="center">{user.email}</TableCell>
@@ -269,7 +270,7 @@ const Users = () => {
 
                     <IconButton
                       size="small"
-                      onClick={(e) => {
+                      onClick={e => {
                         setConfirmModalOpen(true);
                         setDeletingUser(user);
                       }}

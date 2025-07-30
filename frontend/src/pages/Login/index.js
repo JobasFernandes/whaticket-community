@@ -13,9 +13,9 @@ import {
   InputAdornment,
   IconButton,
   Link
-} from '@material-ui/core';
+} from "@material-ui/core";
 
-import { LockOutlined, Visibility, VisibilityOff } from '@material-ui/icons';
+import { LockOutlined, Visibility, VisibilityOff } from "@material-ui/icons";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -36,24 +36,24 @@ import { AuthContext } from "../../context/Auth/AuthContext";
 // 	);
 // };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
+    alignItems: "center"
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.secondary.main
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(1)
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
+    margin: theme.spacing(3, 0, 2)
+  }
 }));
 
 const Login = () => {
@@ -64,11 +64,11 @@ const Login = () => {
 
   const { handleLogin } = useContext(AuthContext);
 
-  const handleChangeInput = (e) => {
+  const handleChangeInput = e => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  const handlSubmit = (e) => {
+  const handlSubmit = e => {
     e.preventDefault();
     handleLogin(user);
   };
@@ -108,13 +108,13 @@ const Login = () => {
             value={user.password}
             onChange={handleChangeInput}
             autoComplete="current-password"
-            type={showPassword ? 'text' : 'password'}
+            type={showPassword ? "text" : "password"}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={() => setShowPassword((e) => !e)}
+                    onClick={() => setShowPassword(e => !e)}
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>

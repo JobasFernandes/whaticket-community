@@ -12,7 +12,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Typography,
+  Typography
 } from "@material-ui/core";
 
 import MainContainer from "../../components/MainContainer";
@@ -28,18 +28,18 @@ import QueueModal from "../../components/QueueModal";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../../components/ConfirmationModal";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   mainPaper: {
     flex: 1,
     padding: theme.spacing(1),
     overflowY: "scroll",
-    ...theme.scrollbarStyles,
+    ...theme.scrollbarStyles
   },
   customTableCell: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
-  },
+    justifyContent: "center"
+  }
 }));
 
 const reducer = (state, action) => {
@@ -47,8 +47,8 @@ const reducer = (state, action) => {
     const queues = action.payload;
     const newQueues = [];
 
-    queues.forEach((queue) => {
-      const queueIndex = state.findIndex((q) => q.id === queue.id);
+    queues.forEach(queue => {
+      const queueIndex = state.findIndex(q => q.id === queue.id);
       if (queueIndex !== -1) {
         state[queueIndex] = queue;
       } else {
@@ -61,7 +61,7 @@ const reducer = (state, action) => {
 
   if (action.type === "UPDATE_QUEUES") {
     const queue = action.payload;
-    const queueIndex = state.findIndex((u) => u.id === queue.id);
+    const queueIndex = state.findIndex(u => u.id === queue.id);
 
     if (queueIndex !== -1) {
       state[queueIndex] = queue;
@@ -73,7 +73,7 @@ const reducer = (state, action) => {
 
   if (action.type === "DELETE_QUEUE") {
     const queueId = action.payload;
-    const queueIndex = state.findIndex((q) => q.id === queueId);
+    const queueIndex = state.findIndex(q => q.id === queueId);
     if (queueIndex !== -1) {
       state.splice(queueIndex, 1);
     }
@@ -113,7 +113,7 @@ const Queues = () => {
   useEffect(() => {
     const socket = openSocket();
 
-    socket.on("queue", (data) => {
+    socket.on("queue", data => {
       if (data.action === "update" || data.action === "create") {
         dispatch({ type: "UPDATE_QUEUES", payload: data.queue });
       }
@@ -138,7 +138,7 @@ const Queues = () => {
     setSelectedQueue(null);
   };
 
-  const handleEditQueue = (queue) => {
+  const handleEditQueue = queue => {
     setSelectedQueue(queue);
     setQueueModalOpen(true);
   };
@@ -148,7 +148,7 @@ const Queues = () => {
     setSelectedQueue(null);
   };
 
-  const handleDeleteQueue = async (queueId) => {
+  const handleDeleteQueue = async queueId => {
     try {
       await api.delete(`/queue/${queueId}`);
       toast.success(i18n.t("Queue deleted successfully!"));
@@ -210,7 +210,7 @@ const Queues = () => {
           </TableHead>
           <TableBody>
             <>
-              {queues.map((queue) => (
+              {queues.map(queue => (
                 <TableRow key={queue.id}>
                   <TableCell align="center">{queue.name}</TableCell>
                   <TableCell align="center">
@@ -220,7 +220,7 @@ const Queues = () => {
                           backgroundColor: queue.color,
                           width: 60,
                           height: 20,
-                          alignSelf: "center",
+                          alignSelf: "center"
                         }}
                       />
                     </div>

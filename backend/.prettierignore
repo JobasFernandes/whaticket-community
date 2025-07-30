@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Database files
+*.db
+*.sqlite
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Package lock files
+package-lock.json
+yarn.lock
+
+# Sequelize migrations and seeds (auto-generated)
+src/database/migrations/
+src/database/seeds/
+
+# Test coverage
+coverage/
