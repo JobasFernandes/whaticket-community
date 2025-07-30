@@ -27,16 +27,17 @@ const useStyles = makeStyles(theme => ({
   drawerPaper: {
     width: drawerWidth,
     display: "flex",
-    borderTop: "1px solid rgba(0, 0, 0, 0.12)",
-    borderRight: "1px solid rgba(0, 0, 0, 0.12)",
-    borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
+    borderTop: `1px solid ${theme.palette.divider}`,
+    borderRight: `1px solid ${theme.palette.divider}`,
+    borderBottom: `1px solid ${theme.palette.divider}`,
     borderTopRightRadius: 4,
-    borderBottomRightRadius: 4
+    borderBottomRightRadius: 4,
+    backgroundColor: theme.palette.background.paper
   },
   header: {
     display: "flex",
-    borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
-    backgroundColor: "#eee",
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    backgroundColor: theme.palette.background.paper,
     alignItems: "center",
     padding: theme.spacing(0, 1),
     minHeight: "73px",
@@ -44,7 +45,7 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     display: "flex",
-    backgroundColor: "#eee",
+    backgroundColor: theme.palette.background.default,
     flexDirection: "column",
     padding: "8px 0px 8px 8px",
     height: "100%",

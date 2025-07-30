@@ -27,6 +27,7 @@ import LocationPreview from "../LocationPreview";
 import ModalImageCors from "../ModalImageCors";
 import MessageOptionsMenu from "../MessageOptionsMenu";
 import whatsBackground from "../../assets/wa-background.png";
+import whatsBackgroundDark from "../../assets/wa-background-dark.png";
 
 import api from "../../services/api.js";
 import toastError from "../../errors/toastError.js";
@@ -42,7 +43,11 @@ const useStyles = makeStyles(theme => ({
   },
 
   messagesList: {
-    backgroundImage: `url(${whatsBackground})`,
+    backgroundImage:
+      theme.palette.type === "dark"
+        ? `url(${whatsBackgroundDark})`
+        : `url(${whatsBackground})`,
+    backgroundColor: "transparent",
     display: "flex",
     flexDirection: "column",
     flexGrow: 1,
@@ -79,8 +84,8 @@ const useStyles = makeStyles(theme => ({
     },
 
     whiteSpace: "pre-wrap",
-    backgroundColor: "#ffffff",
-    color: "#303030",
+    backgroundColor: theme.palette.type === "dark" ? "#2c2c2c" : "#ffffff",
+    color: theme.palette.text.primary,
     alignSelf: "flex-start",
     borderTopLeftRadius: 0,
     borderTopRightRadius: 8,
@@ -90,13 +95,16 @@ const useStyles = makeStyles(theme => ({
     paddingRight: 5,
     paddingTop: 5,
     paddingBottom: 0,
-    boxShadow: "0 1px 1px #b3b3b3"
+    boxShadow:
+      theme.palette.type === "dark"
+        ? "0 1px 1px rgba(255, 255, 255, 0.1)"
+        : "0 1px 1px #b3b3b3"
   },
 
   quotedContainerLeft: {
     margin: "-3px -80px 6px -6px",
     overflow: "hidden",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: theme.palette.type === "dark" ? "#3c3c3c" : "#f0f0f0",
     borderRadius: "7.5px",
     display: "flex",
     position: "relative"
@@ -133,8 +141,8 @@ const useStyles = makeStyles(theme => ({
     },
 
     whiteSpace: "pre-wrap",
-    backgroundColor: "#dcf8c6",
-    color: "#303030",
+    backgroundColor: theme.palette.type === "dark" ? "#1a472a" : "#dcf8c6",
+    color: theme.palette.text.primary,
     alignSelf: "flex-end",
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
@@ -144,13 +152,16 @@ const useStyles = makeStyles(theme => ({
     paddingRight: 5,
     paddingTop: 5,
     paddingBottom: 0,
-    boxShadow: "0 1px 1px #b3b3b3"
+    boxShadow:
+      theme.palette.type === "dark"
+        ? "0 1px 1px rgba(255, 255, 255, 0.1)"
+        : "0 1px 1px #b3b3b3"
   },
 
   quotedContainerRight: {
     margin: "-3px -80px 6px -6px",
     overflowY: "hidden",
-    backgroundColor: "#cfe9ba",
+    backgroundColor: theme.palette.type === "dark" ? "#2a5a3a" : "#cfe9ba",
     borderRadius: "7.5px",
     display: "flex",
     position: "relative"
@@ -172,7 +183,7 @@ const useStyles = makeStyles(theme => ({
   messageActionsButton: {
     display: "none",
     position: "relative",
-    color: "#999",
+    color: theme.palette.text.secondary,
     zIndex: 1,
     backgroundColor: "inherit",
     opacity: "90%",
@@ -192,7 +203,7 @@ const useStyles = makeStyles(theme => ({
 
   textContentItemDeleted: {
     fontStyle: "italic",
-    color: "rgba(0, 0, 0, 0.36)",
+    color: theme.palette.text.disabled,
     overflowWrap: "break-word",
     padding: "3px 80px 6px 6px"
   },
@@ -212,7 +223,7 @@ const useStyles = makeStyles(theme => ({
     position: "absolute",
     bottom: 0,
     right: 5,
-    color: "#999"
+    color: theme.palette.text.secondary
   },
 
   dailyTimestamp: {
@@ -220,14 +231,17 @@ const useStyles = makeStyles(theme => ({
     textAlign: "center",
     alignSelf: "center",
     width: "110px",
-    backgroundColor: "#e1f3fb",
+    backgroundColor: theme.palette.type === "dark" ? "#2c2c2c" : "#e1f3fb",
     margin: "10px",
     borderRadius: "10px",
-    boxShadow: "0 1px 1px #b3b3b3"
+    boxShadow:
+      theme.palette.type === "dark"
+        ? "0 1px 1px rgba(255, 255, 255, 0.1)"
+        : "0 1px 1px #b3b3b3"
   },
 
   dailyTimestampText: {
-    color: "#808888",
+    color: theme.palette.text.secondary,
     padding: 8,
     alignSelf: "center",
     marginLeft: "0px"
