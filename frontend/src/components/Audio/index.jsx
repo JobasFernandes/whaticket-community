@@ -5,7 +5,7 @@ import { useState } from "react";
 
 const LS_NAME = "audioMessageRate";
 
-export default function ({ url }) {
+function AudioComponent({ url }) {
   const audioRef = useRef(null);
   const [audioRate, setAudioRate] = useState(
     parseFloat(localStorage.getItem(LS_NAME) || "1")
@@ -69,3 +69,5 @@ export default function ({ url }) {
     </>
   );
 }
+
+export default AudioComponent;
