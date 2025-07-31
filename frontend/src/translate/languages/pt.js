@@ -34,9 +34,28 @@ const messages = {
         }
       },
       dashboard: {
+        title: "Dashboard",
+        subtitle: "Visão geral do sistema de atendimento",
+        periods: {
+          lastMonth: "Mês Anterior",
+          lastWeek: "Semana Anterior",
+          yesterday: "Ontem",
+          today: "Hoje",
+          week: "Semana Atual",
+          month: "Mês Atual",
+          all: "Todo o Período"
+        },
         charts: {
           perDay: {
             title: "Tickets hoje: "
+          },
+          ticketsByHour: {
+            title: "Tickets por Horário",
+            subtitle: "Distribuição ao longo do dia",
+            tooltip: {
+              time: "Horário",
+              tickets: "Tickets"
+            }
           }
         },
         messages: {
@@ -48,8 +67,25 @@ const messages = {
           },
           closed: {
             title: "Finalizado"
+          },
+          total: {
+            title: "Total de Tickets"
           }
-        }
+        },
+        quickStats: {
+          title: "Resumo Rápido",
+          resolutionRate: "Taxa de Resolução",
+          inService: "Tickets em Atendimento",
+          waiting: "Tickets Aguardando"
+        },
+        userStats: {
+          title: "Tickets por Usuário",
+          opened: "abertos",
+          closed: "fechados",
+          tickets: "tickets",
+          noData: "Nenhum atendimento encontrado"
+        },
+        loading: "Carregando..."
       },
       connections: {
         title: "Conexões",

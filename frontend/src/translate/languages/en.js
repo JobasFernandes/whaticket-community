@@ -34,9 +34,28 @@ const messages = {
         }
       },
       dashboard: {
+        title: "Dashboard",
+        subtitle: "System overview",
+        periods: {
+          lastMonth: "Last Month",
+          lastWeek: "Last Week",
+          yesterday: "Yesterday",
+          today: "Today",
+          week: "Current Week",
+          month: "Current Month",
+          all: "All Period"
+        },
         charts: {
           perDay: {
             title: "Tickets today: "
+          },
+          ticketsByHour: {
+            title: "Tickets by Hour",
+            subtitle: "Distribution throughout the day",
+            tooltip: {
+              time: "Time",
+              tickets: "Tickets"
+            }
           }
         },
         messages: {
@@ -48,8 +67,25 @@ const messages = {
           },
           closed: {
             title: "Closed"
+          },
+          total: {
+            title: "Total Tickets"
           }
-        }
+        },
+        quickStats: {
+          title: "Quick Summary",
+          resolutionRate: "Resolution Rate",
+          inService: "Tickets in Service",
+          waiting: "Tickets Waiting"
+        },
+        userStats: {
+          title: "Tickets by User",
+          opened: "open",
+          closed: "closed",
+          tickets: "tickets",
+          noData: "No service found"
+        },
+        loading: "Loading..."
       },
       connections: {
         title: "Connections",
