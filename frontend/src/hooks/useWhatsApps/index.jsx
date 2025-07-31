@@ -72,7 +72,6 @@ const useWhatsApps = (isAuth = false) => {
         setLoading(false);
       } catch (err) {
         setLoading(false);
-        // Só mostra erro se não for 401 ou 403 (usuário deslogado)
         if (err?.response?.status !== 401 && err?.response?.status !== 403) {
           toastError(err);
         }
@@ -87,7 +86,11 @@ const useWhatsApps = (isAuth = false) => {
     const socket = openSocket();
     if (!socket) return;
 
+    let isMounted = true;
+
     socket.on("whatsapp", data => {
+      if (!isMounted) return;
+
       if (data.action === "update") {
         dispatch({ type: "UPDATE_WHATSAPPS", payload: data.whatsapp });
       }
@@ -97,13 +100,18 @@ const useWhatsApps = (isAuth = false) => {
     });
 
     socket.on("whatsappSession", data => {
+      if (!isMounted) return;
+
       if (data.action === "update") {
         dispatch({ type: "UPDATE_SESSION", payload: data.session });
       }
     });
 
     return () => {
-      socket.disconnect();
+      isMounted = false;
+      if (socket) {
+        socket.disconnect();
+      }
     };
   }, [isAuth]);
 

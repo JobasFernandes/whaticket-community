@@ -279,13 +279,14 @@ const messages = {
       },
       mainDrawer: {
         listItems: {
+          attendances: "Attendances",
+          administration: "Administration",
           dashboard: "Dashboard",
           connections: "Connections",
           tickets: "Tickets",
           contacts: "Contacts",
           quickAnswers: "Quick Answers",
           queues: "Queues",
-          administration: "Administration",
           users: "Users",
           settings: "Settings"
         },
@@ -297,6 +298,7 @@ const messages = {
         }
       },
       notifications: {
+        title: "Notifications",
         noTickets: "No notifications."
       },
       queues: {

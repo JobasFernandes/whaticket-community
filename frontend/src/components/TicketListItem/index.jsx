@@ -1,123 +1,17 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-
 import { useHistory, useParams } from "react-router-dom";
 import { parseISO, format, isSameDay } from "date-fns";
 import clsx from "clsx";
-
-import { makeStyles } from "@material-ui/core/styles";
-import { green } from "@material-ui/core/colors";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
-import Divider from "@material-ui/core/Divider";
-import Badge from "@material-ui/core/Badge";
+import { User } from "lucide-react";
 
 import { i18n } from "../../translate/i18n.js";
-
 import api from "../../services/api.js";
 import ButtonWithSpinner from "../ButtonWithSpinner";
 import MarkdownWrapper from "../MarkdownWrapper";
-import { Tooltip } from "@material-ui/core";
 import { AuthContext } from "../../context/Auth/AuthContext";
 import toastError from "../../errors/toastError.js";
 
-const useStyles = makeStyles(theme => ({
-  ticket: {
-    position: "relative"
-  },
-
-  pendingTicket: {
-    cursor: "unset"
-  },
-
-  noTicketsDiv: {
-    display: "flex",
-    height: "100px",
-    margin: 40,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-
-  noTicketsText: {
-    textAlign: "center",
-    color: "rgb(104, 121, 146)",
-    fontSize: "14px",
-    lineHeight: "1.4"
-  },
-
-  noTicketsTitle: {
-    textAlign: "center",
-    fontSize: "16px",
-    fontWeight: "600",
-    margin: "0px"
-  },
-
-  contactNameWrapper: {
-    display: "flex",
-    justifyContent: "space-between"
-  },
-
-  lastMessageTime: {
-    justifySelf: "flex-end"
-  },
-
-  closedBadge: {
-    alignSelf: "center",
-    justifySelf: "flex-end",
-    marginRight: 32,
-    marginLeft: "auto"
-  },
-
-  contactLastMessage: {
-    paddingRight: 20
-  },
-
-  newMessagesCount: {
-    alignSelf: "center",
-    marginRight: 8,
-    marginLeft: "auto"
-  },
-
-  badgeStyle: {
-    color: "white",
-    backgroundColor: green[500]
-  },
-
-  acceptButton: {
-    position: "absolute",
-    left: "50%"
-  },
-
-  ticketQueueColor: {
-    flex: "none",
-    width: "8px",
-    height: "100%",
-    position: "absolute",
-    top: "0%",
-    left: "0%"
-  },
-
-  userTag: {
-    position: "absolute",
-    marginRight: 5,
-    right: 5,
-    bottom: 5,
-    background: "#2576D2",
-    color: "#ffffff",
-    border: "1px solid #CCC",
-    padding: 1,
-    paddingLeft: 5,
-    paddingRight: 5,
-    borderRadius: 10,
-    fontSize: "0.9em"
-  }
-}));
-
 const TicketListItem = ({ ticket }) => {
-  const classes = useStyles();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const { ticketId } = useParams();
@@ -151,119 +45,171 @@ const TicketListItem = ({ ticket }) => {
     history.push(`/tickets/${id}`);
   };
 
+  const isSelected = ticketId && +ticketId === ticket.id;
+  const isPending = ticket.status === "pending";
+  const isClosed = ticket.status === "closed";
+
   return (
-    <React.Fragment key={ticket.id}>
-      <ListItem
-        dense
-        button
+    <div className="relative">
+      <div
+        className={clsx(
+          "relative flex items-center px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150 cursor-pointer border-l-4",
+          {
+            "bg-blue-50 dark:bg-blue-900/20 border-l-blue-500": isSelected,
+            "border-l-transparent": !isSelected,
+            "cursor-default": isPending,
+            "bg-yellow-50 dark:bg-yellow-900/20 border-l-yellow-500": isPending
+          }
+        )}
+        style={{
+          borderLeftColor:
+            !isSelected && !isPending && ticket.queue?.color
+              ? ticket.queue.color
+              : undefined
+        }}
         onClick={e => {
-          if (ticket.status === "pending") return;
+          if (isPending) return;
           handleSelectTicket(ticket.id);
         }}
-        selected={ticketId && +ticketId === ticket.id}
-        className={clsx(classes.ticket, {
-          [classes.pendingTicket]: ticket.status === "pending"
-        })}
       >
-        <Tooltip
-          arrow
-          placement="right"
-          title={ticket.queue?.name || "Sem fila"}
-        >
-          <span
-            style={{ backgroundColor: ticket.queue?.color || "#7C7C7C" }}
-            className={classes.ticketQueueColor}
-          ></span>
-        </Tooltip>
-        <ListItemAvatar>
-          <Avatar src={ticket?.contact?.profilePicUrl} />
-        </ListItemAvatar>
-        <ListItemText
-          disableTypography
-          primary={
-            <span className={classes.contactNameWrapper}>
-              <Typography
-                noWrap
-                component="span"
-                variant="body2"
-                color="textPrimary"
-              >
-                {ticket.contact.name}
-              </Typography>
-              {ticket.status === "closed" && (
-                <Badge
-                  className={classes.closedBadge}
-                  badgeContent={"closed"}
-                  color="primary"
-                  overlap="rectangular"
-                />
+        {/* Avatar */}
+        <div className="flex-shrink-0 mr-3 relative">
+          {ticket?.contact?.profilePicUrl ? (
+            <img
+              src={ticket.contact.profilePicUrl}
+              alt={ticket.contact.name}
+              className="w-8 h-8 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+              <User size={16} className="text-gray-500 dark:text-gray-400" />
+            </div>
+          )}
+
+          {/* Unread count badge on avatar */}
+          {ticket.unreadMessages > 0 && (
+            <span className="absolute -top-1 -right-1 inline-flex items-center justify-center h-[16px] w-[16px] text-xs font-bold text-white bg-green-500 rounded-full">
+              {ticket.unreadMessages > 9 ? "9+" : ticket.unreadMessages}
+            </span>
+          )}
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <h3
+              className={clsx(
+                "text-sm font-medium truncate pr-2",
+                isPending
+                  ? "text-gray-900 dark:text-white font-semibold"
+                  : "text-gray-900 dark:text-white"
               )}
+            >
+              {ticket.contact.name}
+            </h3>
+
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {/* Status badge */}
+              {isClosed && (
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                  Fechado
+                </span>
+              )}
+
+              {/* Pending badge */}
+              {isPending && (
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300">
+                  Pendente
+                </span>
+              )}
+
+              {/* Time */}
               {ticket.lastMessage && (
-                <Typography
-                  className={classes.lastMessageTime}
-                  component="span"
-                  variant="body2"
-                  color="textSecondary"
-                >
-                  {isSameDay(parseISO(ticket.updatedAt), new Date()) ? (
-                    <>{format(parseISO(ticket.updatedAt), "HH:mm")}</>
-                  ) : (
-                    <>{format(parseISO(ticket.updatedAt), "dd/MM/yyyy")}</>
-                  )}
-                </Typography>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {isSameDay(parseISO(ticket.updatedAt), new Date())
+                    ? format(parseISO(ticket.updatedAt), "HH:mm")
+                    : format(parseISO(ticket.updatedAt), "dd/MM")}
+                </span>
               )}
-              {ticket.whatsappId && (
+            </div>
+          </div>
+
+          {/* Message and Tags */}
+          <div className="flex items-center justify-between mt-1">
+            <div className="flex-1 min-w-0">
+              {ticket.lastMessage ? (
                 <div
-                  className={classes.userTag}
+                  className={clsx(
+                    "text-xs truncate pr-2",
+                    isPending
+                      ? "text-gray-800 dark:text-gray-200 font-medium"
+                      : "text-gray-600 dark:text-gray-400"
+                  )}
+                >
+                  <MarkdownWrapper>{ticket.lastMessage}</MarkdownWrapper>
+                </div>
+              ) : (
+                <div
+                  className={clsx(
+                    "text-xs italic",
+                    isPending
+                      ? "text-yellow-700 dark:text-yellow-300"
+                      : "text-gray-400 dark:text-gray-500"
+                  )}
+                >
+                  {isPending ? "Aguardando atendimento" : "Sem mensagens"}
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center gap-1 flex-shrink-0">
+              {/* Accept button for pending tickets - positioned with tags */}
+              {isPending && (
+                <ButtonWithSpinner
+                  color="primary"
+                  variant="contained"
+                  size="small"
+                  loading={loading}
+                  onClick={e => {
+                    e.stopPropagation();
+                    handleAcepptTicket(ticket.id);
+                  }}
+                  style={{ padding: "4px" }}
+                  className="!inline-flex !items-center px-1.5 py-0.5 !text-xs !font-medium !rounded !bg-red-600 hover:!bg-red-700 !text-white !shadow-none !border-none !min-h-0 !h-auto !leading-none"
+                >
+                  {i18n.t("ticketsList.buttons.accept")}
+                </ButtonWithSpinner>
+              )}
+
+              {/* Queue tag */}
+              {ticket.queue && (
+                <span
+                  className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium text-white"
+                  style={{ backgroundColor: ticket.queue.color || "#6B7280" }}
+                  title={ticket.queue.name}
+                >
+                  {ticket.queue.name}
+                </span>
+              )}
+
+              {/* WhatsApp connection */}
+              {ticket.whatsappId && (
+                <span
+                  className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300"
                   title={i18n.t("ticketsList.connectionTitle")}
                 >
                   {ticket.whatsapp?.name}
-                </div>
+                </span>
               )}
-            </span>
-          }
-          secondary={
-            <span className={classes.contactNameWrapper}>
-              <Typography
-                className={classes.contactLastMessage}
-                noWrap
-                component="span"
-                variant="body2"
-                color="textSecondary"
-              >
-                {ticket.lastMessage ? (
-                  <MarkdownWrapper>{ticket.lastMessage}</MarkdownWrapper>
-                ) : (
-                  <br />
-                )}
-              </Typography>
+            </div>
+          </div>
+        </div>
+      </div>
 
-              <Badge
-                className={classes.newMessagesCount}
-                badgeContent={ticket.unreadMessages}
-                overlap="rectangular"
-                classes={{
-                  badge: classes.badgeStyle
-                }}
-              />
-            </span>
-          }
-        />
-        {ticket.status === "pending" && (
-          <ButtonWithSpinner
-            color="primary"
-            variant="contained"
-            className={classes.acceptButton}
-            size="small"
-            loading={loading}
-            onClick={e => handleAcepptTicket(ticket.id)}
-          >
-            {i18n.t("ticketsList.buttons.accept")}
-          </ButtonWithSpinner>
-        )}
-      </ListItem>
-      <Divider variant="inset" component="li" />
-    </React.Fragment>
+      {/* Divider */}
+      <div className="border-b border-gray-200 dark:border-gray-700 ml-11" />
+    </div>
   );
 };
 

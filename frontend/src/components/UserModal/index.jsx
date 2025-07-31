@@ -85,13 +85,19 @@ const UserModal = ({ open, onClose, userId }) => {
 
   const { user: loggedInUser } = useContext(AuthContext);
 
+  if (!loggedInUser?.id) {
+    return null;
+  }
+
   const [user, setUser] = useState(initialState);
   const [selectedQueueIds, setSelectedQueueIds] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [whatsappId, setWhatsappId] = useState("");
-  const { loading, whatsApps } = useWhatsApps(true);
+  const { loading, whatsApps } = useWhatsApps(!!loggedInUser?.id);
 
   useEffect(() => {
+    if (!loggedInUser?.id) return;
+
     let isMounted = true;
 
     const fetchUser = async () => {
@@ -107,7 +113,11 @@ const UserModal = ({ open, onClose, userId }) => {
           setWhatsappId(data.whatsappId ? data.whatsappId : "");
         }
       } catch (err) {
-        if (isMounted) {
+        if (
+          isMounted &&
+          err?.response?.status !== 401 &&
+          err?.response?.status !== 403
+        ) {
           toastError(err);
         }
       }
@@ -118,7 +128,7 @@ const UserModal = ({ open, onClose, userId }) => {
     return () => {
       isMounted = false;
     };
-  }, [userId, open]);
+  }, [userId, open, loggedInUser?.id]);
 
   const handleClose = () => {
     onClose();

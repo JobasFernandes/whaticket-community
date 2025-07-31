@@ -44,6 +44,10 @@ const TransferTicketModal = ({
   ticketWhatsappId
 }) => {
   const history = useHistory();
+  const { user: loggedInUser } = useContext(AuthContext);
+
+  if (!loggedInUser?.id) return null;
+
   const [options, setOptions] = useState([]);
   const [queues, setQueues] = useState([]);
   const [allQueues, setAllQueues] = useState([]);
@@ -51,12 +55,10 @@ const TransferTicketModal = ({
   const [searchParam, setSearchParam] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedQueue, setSelectedQueue] = useState("");
-  const [selectedWhatsapp, setSelectedWhatsapp] = useState(ticketWhatsappId);
+  const [selectedWhatsapp, setSelectedWhatsapp] = useState("");
   const classes = useStyles();
   const { findAll: findAllQueues } = useQueues();
-  const { loadingWhatsapps, whatsApps } = useWhatsApps();
-
-  const { user: loggedInUser } = useContext(AuthContext);
+  const { loading: loadingWhatsapps, whatsApps } = useWhatsApps(true);
 
   useEffect(() => {
     const loadQueues = async () => {
@@ -69,7 +71,22 @@ const TransferTicketModal = ({
   }, []);
 
   useEffect(() => {
-    if (!modalOpen || searchParam.length < 3) {
+    if (!loadingWhatsapps && whatsApps.length > 0) {
+      if (ticketWhatsappId) {
+        const isValidWhatsapp = whatsApps.some(w => w.id === ticketWhatsappId);
+        if (isValidWhatsapp) {
+          setSelectedWhatsapp(ticketWhatsappId);
+        } else {
+          setSelectedWhatsapp("");
+        }
+      } else {
+        setSelectedWhatsapp("");
+      }
+    }
+  }, [loadingWhatsapps, whatsApps, ticketWhatsappId]);
+
+  useEffect(() => {
+    if (!modalOpen || searchParam.length < 3 || !loggedInUser?.id) {
       setLoading(false);
       return;
     }
@@ -84,14 +101,16 @@ const TransferTicketModal = ({
           setLoading(false);
         } catch (err) {
           setLoading(false);
-          toastError(err);
+          if (err?.response?.status !== 401 && err?.response?.status !== 403) {
+            toastError(err);
+          }
         }
       };
 
       fetchUsers();
     }, 500);
     return () => clearTimeout(delayDebounceFn);
-  }, [searchParam, modalOpen]);
+  }, [searchParam, modalOpen, loggedInUser?.id]);
 
   const handleClose = () => {
     onClose();
@@ -217,6 +236,7 @@ const TransferTicketModal = ({
                       "transferTicketModal.fieldConnectionPlaceholder"
                     )}
                   >
+                    <MenuItem value="">&nbsp;</MenuItem>
                     {whatsApps.map(whasapp => (
                       <MenuItem key={whasapp.id} value={whasapp.id}>
                         {whasapp.name}

@@ -76,14 +76,21 @@ const useAuth = () => {
     const socket = openSocket();
     if (!socket) return;
 
+    let isMounted = true;
+
     socket.on("user", data => {
+      if (!isMounted) return;
+
       if (data.action === "update" && data.user.id === user.id) {
         setUser(data.user);
       }
     });
 
     return () => {
-      socket.disconnect();
+      isMounted = false;
+      if (socket) {
+        socket.disconnect();
+      }
     };
   }, [user, isAuth]);
 
@@ -111,7 +118,6 @@ const useAuth = () => {
     try {
       await api.delete("/auth/logout");
     } catch (err) {
-      // Ignora erros de logout para não exibir toast desnecessário
     } finally {
       setIsAuth(false);
       setUser({});

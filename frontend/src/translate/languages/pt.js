@@ -282,13 +282,14 @@ const messages = {
       },
       mainDrawer: {
         listItems: {
+          attendances: "Atendimentos",
+          administration: "Administração",
           dashboard: "Dashboard",
           connections: "Conexões",
           tickets: "Tickets",
           contacts: "Contatos",
           quickAnswers: "Respostas Rápidas",
           queues: "Filas",
-          administration: "Administração",
           users: "Usuários",
           settings: "Configurações"
         },
@@ -300,6 +301,7 @@ const messages = {
         }
       },
       notifications: {
+        title: "Notificações",
         noTickets: "Nenhuma notificação."
       },
       queues: {

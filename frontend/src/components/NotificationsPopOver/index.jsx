@@ -3,15 +3,7 @@ import { useHistory } from "react-router-dom";
 import { format } from "date-fns";
 import openSocket from "../../services/socket-io.js";
 import useSound from "use-sound";
-
-import Popover from "@material-ui/core/Popover";
-import IconButton from "@material-ui/core/IconButton";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import { makeStyles } from "@material-ui/core/styles";
-import Badge from "@material-ui/core/Badge";
-import ChatIcon from "@material-ui/icons/Chat";
+import { Bell, BellRing } from "lucide-react";
 
 import TicketListItem from "../TicketListItem";
 import { i18n } from "../../translate/i18n.js";
@@ -19,32 +11,7 @@ import useTickets from "../../hooks/useTickets";
 import alertSound from "../../assets/sound.mp3";
 import { AuthContext } from "../../context/Auth/AuthContext";
 
-const useStyles = makeStyles(theme => ({
-  tabContainer: {
-    overflowY: "auto",
-    maxHeight: 350,
-    ...theme.scrollbarStyles
-  },
-  popoverPaper: {
-    width: "100%",
-    maxWidth: 350,
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(1),
-    [theme.breakpoints.down("sm")]: {
-      maxWidth: 270
-    }
-  },
-  noShadow: {
-    boxShadow: "none !important"
-  },
-  iconButton: {
-    color: theme.palette.text.primary
-  }
-}));
-
 const NotificationsPopOver = () => {
-  const classes = useStyles();
-
   const history = useHistory();
   const { user } = useContext(AuthContext);
   const ticketIdUrl = +history.location.pathname.split("/")[2];
@@ -65,7 +32,6 @@ const NotificationsPopOver = () => {
 
   const historyRef = useRef(history);
 
-  // Função para resumir AudioContext após interação do usuário
   const resumeAudioContext = async () => {
     if (!audioContextResumed) {
       try {
@@ -99,7 +65,6 @@ const NotificationsPopOver = () => {
       Notification.requestPermission();
     }
 
-    // Adicionar listener para primeira interação do usuário
     const handleFirstInteraction = () => {
       resumeAudioContext();
       document.removeEventListener("click", handleFirstInteraction);
@@ -118,6 +83,14 @@ const NotificationsPopOver = () => {
   useEffect(() => {
     setNotifications(tickets);
   }, [tickets]);
+
+  useEffect(() => {
+    if (!user) {
+      setNotifications([]);
+      setDesktopNotifications([]);
+      setIsOpen(false);
+    }
+  }, [user]);
 
   useEffect(() => {
     ticketIdRef.current = ticketIdUrl;
@@ -233,51 +206,74 @@ const NotificationsPopOver = () => {
   };
 
   return (
-    <>
-      <IconButton
-        onClick={handleClick}
-        ref={anchorEl}
-        aria-label="Open Notifications"
-        className={classes.iconButton}
-      >
-        <Badge
-          badgeContent={notifications.length}
-          color="secondary"
-          overlap="rectangular"
-        >
-          <ChatIcon />
-        </Badge>
-      </IconButton>
-      <Popover
-        disableScrollLock
-        open={isOpen}
-        anchorEl={anchorEl.current}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right"
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right"
-        }}
-        classes={{ paper: classes.popoverPaper }}
-        onClose={handleClickAway}
-      >
-        <List dense className={classes.tabContainer}>
-          {notifications.length === 0 ? (
-            <ListItem>
-              <ListItemText>{i18n.t("notifications.noTickets")}</ListItemText>
-            </ListItem>
-          ) : (
-            notifications.map(ticket => (
-              <NotificationTicket key={ticket.id}>
-                <TicketListItem ticket={ticket} />
-              </NotificationTicket>
-            ))
+    <div className="relative">
+      {user && (
+        <>
+          <button
+            onClick={handleClick}
+            ref={anchorEl}
+            className="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-100 dark:bg-[#2c2c2c] hover:bg-gray-200 dark:hover:bg-[#3d3d3d] text-gray-600 dark:text-gray-300 transition-colors duration-150"
+            aria-label="Notificações"
+          >
+            {notifications.length > 0 ? (
+              <BellRing size={20} />
+            ) : (
+              <Bell size={20} />
+            )}
+            {notifications.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-[16px] w-[16px] flex items-center justify-center font-medium text-[10px]">
+                {notifications.length > 9 ? "9+" : notifications.length}
+              </span>
+            )}
+          </button>
+
+          {/* Dropdown */}
+          {isOpen && (
+            <>
+              {/* Backdrop */}
+              <div
+                className="fixed inset-0 z-10"
+                onClick={handleClickAway}
+              ></div>
+
+              {/* Popover */}
+              <div className="absolute right-0 mt-2 w-80 max-w-sm bg-white dark:bg-[#1e1e1e] rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-20">
+                {/* Header */}
+                <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                    {i18n.t("notifications.title") || "Notificações"}
+                  </h3>
+                </div>
+
+                {/* Content */}
+                <div className="max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600">
+                  {notifications.length === 0 ? (
+                    <div className="px-4 py-8 text-center">
+                      <Bell
+                        size={48}
+                        className="mx-auto text-gray-400 dark:text-gray-500 mb-3"
+                      />
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {i18n.t("notifications.noTickets") ||
+                          "Sem notificações"}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="py-2">
+                      {notifications.map(ticket => (
+                        <NotificationTicket key={ticket.id}>
+                          <TicketListItem ticket={ticket} />
+                        </NotificationTicket>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
           )}
-        </List>
-      </Popover>
-    </>
+        </>
+      )}
+    </div>
   );
 };
 
