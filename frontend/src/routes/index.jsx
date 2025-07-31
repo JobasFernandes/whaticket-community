@@ -16,6 +16,7 @@ import Queues from "../pages/Queues/index";
 import { AuthProvider, AuthContext } from "../context/Auth/AuthContext";
 import { WhatsAppsProvider } from "../context/WhatsApp/WhatsAppsContext";
 import { ThemeProvider } from "../context/DarkMode/index";
+import { I18nProvider } from "../context/I18n/index";
 import Route from "./Route";
 
 const PrivateRoutes = () => {
@@ -66,14 +67,16 @@ const Routes = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <ThemeProvider>
-          <Switch>
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/signup" component={Signup} />
-            <PrivateRoutes />
-          </Switch>
-          <ToastContainer autoClose={3000} />
-        </ThemeProvider>
+        <I18nProvider>
+          <ThemeProvider>
+            <Switch>
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/signup" component={Signup} />
+              <PrivateRoutes />
+            </Switch>
+            <ToastContainer autoClose={3000} />
+          </ThemeProvider>
+        </I18nProvider>
       </AuthProvider>
     </BrowserRouter>
   );

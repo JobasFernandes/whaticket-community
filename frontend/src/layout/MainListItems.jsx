@@ -1,6 +1,5 @@
-import { useRef, useState, useContext } from "react";
+import { useRef, useState, useContext, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { i18n } from "../translate/i18n.js";
 import {
   Home,
   MessageCircle,
@@ -14,11 +13,13 @@ import {
   User as UserIcon,
   Layers,
   MessageSquare,
-  AlertTriangle
+  AlertTriangle,
+  Globe
 } from "lucide-react";
 import { useThemeContext } from "../context/DarkMode";
 import { AuthContext } from "../context/Auth/AuthContext";
 import { WhatsAppsContext } from "../context/WhatsApp/WhatsAppsContext";
+import { useI18n } from "../context/I18n";
 import NotificationsPopOver from "../components/NotificationsPopOver";
 import UserModal from "../components/UserModal";
 import clsx from "clsx";
@@ -27,58 +28,58 @@ import { Can } from "../components/Can";
 const mainLinks = [
   {
     to: "/",
-    label: i18n.t("mainDrawer.listItems.dashboard"),
+    label: "dashboard",
     icon: <Home size={20} />,
     adminOnly: true
   },
   {
-    label: i18n.t("mainDrawer.listItems.attendances"),
+    label: "attendances",
     icon: <MessageCircle size={20} />,
     submenu: [
       {
         to: "/tickets",
-        label: i18n.t("mainDrawer.listItems.tickets"),
+        label: "tickets",
         icon: <MessageCircle size={18} />
       },
       {
         to: "/contacts",
-        label: i18n.t("mainDrawer.listItems.contacts"),
+        label: "contacts",
         icon: <Phone size={18} />
       },
       {
         to: "/quickAnswers",
-        label: i18n.t("mainDrawer.listItems.quickAnswers"),
+        label: "quickAnswers",
         icon: <MessageSquare size={18} />
       }
     ],
     adminOnly: false
   },
   {
-    label: i18n.t("mainDrawer.listItems.administration"),
+    label: "administration",
     icon: <Settings size={20} />,
     submenu: [
       {
         to: "/users",
-        label: i18n.t("mainDrawer.listItems.users"),
+        label: "users",
         icon: <UserIcon size={18} />,
         adminOnly: true
       },
       {
         to: "/queues",
-        label: i18n.t("mainDrawer.listItems.queues"),
+        label: "queues",
         icon: <Layers size={18} />,
         adminOnly: true
       },
       {
         to: "/connections",
-        label: i18n.t("mainDrawer.listItems.connections"),
+        label: "connections",
         icon: <QrCode size={18} />,
         adminOnly: true,
-        showAlert: true // Indicador para mostrar alerta se houver conexões desconectadas
+        showAlert: true
       },
       {
         to: "/settings",
-        label: i18n.t("mainDrawer.listItems.settings"),
+        label: "settings",
         icon: <Settings size={18} />,
         adminOnly: true
       }
@@ -91,16 +92,64 @@ export default function MainListItems() {
   const { darkMode, toggleTheme } = useThemeContext();
   const { user, handleLogout } = useContext(AuthContext);
   const { whatsApps } = useContext(WhatsAppsContext);
+  const { currentLanguage, changeLanguage, t, isLoading } = useI18n();
 
   if (!user) return null;
 
   const [userModalOpen, setUserModalOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
   const dropdownTimeout = useRef();
+  const isMountedRef = useRef(true);
   const location = useLocation();
 
-  // Verifica se há conexões desconectadas
+  const languages = [
+    { code: "pt", name: "Português", flag: "🇧🇷" },
+    { code: "en", name: "English", flag: "🇺🇸" },
+    { code: "es", name: "Español", flag: "🇪🇸" }
+  ];
+
+  const currentLang =
+    languages.find(lang => lang.code === currentLanguage) || languages[0];
+
+  const handleLanguageChange = async languageCode => {
+    if (languageCode !== currentLanguage) {
+      setLanguageDropdownOpen(false);
+
+      try {
+        await changeLanguage(languageCode);
+      } catch (error) {
+        console.error("Erro ao trocar idioma:", error);
+        if (isMountedRef.current) {
+          setLanguageDropdownOpen(true);
+        }
+      }
+    } else {
+      if (isMountedRef.current) {
+        setLanguageDropdownOpen(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isMountedRef.current) {
+      setOpenDropdown(null);
+      setLanguageDropdownOpen(false);
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+
+    return () => {
+      isMountedRef.current = false;
+      if (dropdownTimeout.current) {
+        clearTimeout(dropdownTimeout.current);
+      }
+    };
+  }, []);
+
   const hasDisconnectedConnections =
     whatsApps?.some(whatsApp => whatsApp.status !== "CONNECTED") || false;
 
@@ -117,6 +166,10 @@ export default function MainListItems() {
   };
 
   const renderLink = (link, isMobile = false) => {
+    const getTranslatedLabel = labelKey => {
+      return t(`mainDrawer.listItems.${labelKey}`);
+    };
+
     if (link.submenu) {
       const isDropdownOpen = openDropdown === link.label;
       const isSubmenuCurrentlyActive = isSubmenuActive(link.submenu);
@@ -124,15 +177,17 @@ export default function MainListItems() {
         ? Can
         : ({ yes, ...props }) => yes();
       const handleMouseEnter = () => {
-        if (!isMobile) {
+        if (!isMobile && isMountedRef.current) {
           clearTimeout(dropdownTimeout.current);
           setOpenDropdown(link.label);
         }
       };
       const handleMouseLeave = () => {
-        if (!isMobile) {
+        if (!isMobile && isMountedRef.current) {
           dropdownTimeout.current = setTimeout(() => {
-            setOpenDropdown(null);
+            if (isMountedRef.current) {
+              setOpenDropdown(null);
+            }
           }, 200);
         }
       };
@@ -155,12 +210,14 @@ export default function MainListItems() {
                     ? "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
                     : "text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:text-blue-700 dark:hover:text-blue-300"
                 )}
-                onClick={() =>
-                  setOpenDropdown(isDropdownOpen ? null : link.label)
-                }
+                onClick={() => {
+                  if (isMountedRef.current) {
+                    setOpenDropdown(isDropdownOpen ? null : link.label);
+                  }
+                }}
               >
                 {link.icon}
-                <span>{link.label}</span>
+                <span>{getTranslatedLabel(link.label)}</span>
                 <svg
                   className="ml-1 w-4 h-4"
                   fill="none"
@@ -182,8 +239,10 @@ export default function MainListItems() {
                 >
                   {link.submenu.map(sublink => {
                     const handleSubClick = () => {
-                      setOpenDropdown(null);
-                      setMobileMenuOpen(false);
+                      if (isMountedRef.current) {
+                        setOpenDropdown(null);
+                        setMobileMenuOpen(false);
+                      }
                     };
                     if (sublink.adminOnly) {
                       return (
@@ -204,7 +263,7 @@ export default function MainListItems() {
                             >
                               <div className="flex items-center gap-3">
                                 {sublink.icon}
-                                <span>{sublink.label}</span>
+                                <span>{getTranslatedLabel(sublink.label)}</span>
                               </div>
                               {sublink.showAlert &&
                                 hasDisconnectedConnections && (
@@ -233,7 +292,7 @@ export default function MainListItems() {
                       >
                         <div className="flex items-center gap-3">
                           {sublink.icon}
-                          <span>{sublink.label}</span>
+                          <span>{getTranslatedLabel(sublink.label)}</span>
                         </div>
                         {sublink.showAlert && hasDisconnectedConnections && (
                           <AlertTriangle
@@ -267,10 +326,14 @@ export default function MainListItems() {
                   ? "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
                   : "text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:text-blue-700 dark:hover:text-blue-300"
               )}
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={() => {
+                if (isMountedRef.current) {
+                  setMobileMenuOpen(false);
+                }
+              }}
             >
               {link.icon}
-              <span>{link.label}</span>
+              <span>{getTranslatedLabel(link.label)}</span>
             </Link>
           )}
         />
@@ -286,10 +349,14 @@ export default function MainListItems() {
             ? "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
             : "text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:text-blue-700 dark:hover:text-blue-300"
         )}
-        onClick={() => setMobileMenuOpen(false)}
+        onClick={() => {
+          if (isMountedRef.current) {
+            setMobileMenuOpen(false);
+          }
+        }}
       >
         {link.icon}
-        <span>{link.label}</span>
+        <span>{getTranslatedLabel(link.label)}</span>
       </Link>
     );
   };
@@ -298,7 +365,7 @@ export default function MainListItems() {
     <nav className="fixed top-0 left-0 w-full z-30 bg-white dark:bg-[#1e1e1e] border-b border-gray-200 dark:border-gray-700 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
         <div className="flex h-12 items-center justify-between">
-          {/* Logo e Links - Lado Esquerdo */}
+          {/* Logo e Links */}
           <div className="flex items-center gap-8">
             {/* Logo */}
             <div className="flex items-center">
@@ -307,13 +374,13 @@ export default function MainListItems() {
               </span>
             </div>
 
-            {/* Desktop Nav - Próximo ao Logo */}
+            {/* Desktop Nav */}
             <div className="hidden md:flex items-center gap-1">
               {mainLinks.map(link => renderLink(link, false))}
             </div>
           </div>
 
-          {/* Botões de Ação - Lado Direito */}
+          {/* Botões de Ação */}
           <div className="flex items-center gap-2">
             {/* Connection Alert */}
             {hasDisconnectedConnections && (
@@ -345,10 +412,70 @@ export default function MainListItems() {
               <NotificationsPopOver />
             </div>
 
+            {/* Language Selector */}
+            <div className="relative">
+              <button
+                onClick={() => {
+                  if (isMountedRef.current) {
+                    setLanguageDropdownOpen(!languageDropdownOpen);
+                  }
+                }}
+                className="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-100 dark:bg-[#2c2c2c] hover:bg-gray-200 dark:hover:bg-[#3d3d3d] text-gray-600 dark:text-gray-300 transition-colors duration-150"
+                title="Alterar idioma"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
+                ) : (
+                  <Globe size={20} />
+                )}
+              </button>
+
+              {/* Language Dropdown */}
+              {languageDropdownOpen && (
+                <>
+                  {/* Backdrop */}
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => {
+                      if (isMountedRef.current) {
+                        setLanguageDropdownOpen(false);
+                      }
+                    }}
+                  />
+
+                  {/* Dropdown Menu */}
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#1e1e1e] border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-2 z-20">
+                    {languages.map(language => (
+                      <button
+                        key={language.code}
+                        onClick={() => handleLanguageChange(language.code)}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors duration-150 ${
+                          currentLang.code === language.code
+                            ? "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
+                            : "text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:text-blue-700 dark:hover:text-blue-300"
+                        }`}
+                      >
+                        <span className="text-lg">{language.flag}</span>
+                        <span>{language.name}</span>
+                        {currentLang.code === language.code && (
+                          <div className="ml-auto w-2 h-2 bg-blue-500 rounded-full"></div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
             {/* User menu */}
             <div className="relative">
               <button
-                onClick={() => setUserModalOpen(true)}
+                onClick={() => {
+                  if (isMountedRef.current) {
+                    setUserModalOpen(true);
+                  }
+                }}
                 className="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-100 dark:bg-[#2c2c2c] hover:bg-gray-200 dark:hover:bg-[#3d3d3d] text-gray-600 dark:text-gray-300 transition-colors duration-150"
                 title="Perfil do usuário"
               >
@@ -356,7 +483,11 @@ export default function MainListItems() {
               </button>
               <UserModal
                 open={userModalOpen}
-                onClose={() => setUserModalOpen(false)}
+                onClose={() => {
+                  if (isMountedRef.current) {
+                    setUserModalOpen(false);
+                  }
+                }}
                 userId={user?.id}
               />
             </div>
@@ -373,7 +504,11 @@ export default function MainListItems() {
             {/* Mobile menu button */}
             <button
               className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg bg-gray-100 dark:bg-[#2c2c2c] hover:bg-gray-200 dark:hover:bg-[#3d3d3d] text-gray-600 dark:text-gray-300 transition-colors duration-150 ml-2"
-              onClick={() => setMobileMenuOpen(v => !v)}
+              onClick={() => {
+                if (isMountedRef.current) {
+                  setMobileMenuOpen(v => !v);
+                }
+              }}
               title="Abrir menu"
             >
               <MenuIcon size={20} />
@@ -388,7 +523,11 @@ export default function MainListItems() {
           {/* Overlay backdrop */}
           <div
             className="fixed inset-0 z-40 bg-black bg-opacity-50 transition-opacity duration-300 md:hidden"
-            onClick={() => setMobileMenuOpen(false)}
+            onClick={() => {
+              if (isMountedRef.current) {
+                setMobileMenuOpen(false);
+              }
+            }}
           />
 
           {/* Drawer panel */}
@@ -400,7 +539,11 @@ export default function MainListItems() {
                   WhaTicket
                 </span>
                 <button
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={() => {
+                    if (isMountedRef.current) {
+                      setMobileMenuOpen(false);
+                    }
+                  }}
                   className="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors duration-150"
                 >
                   <svg
@@ -428,7 +571,7 @@ export default function MainListItems() {
 
               {/* Footer actions */}
               <div className="border-t border-gray-200 dark:border-gray-700 p-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-3">
                   {/* Theme toggle */}
                   <button
                     onClick={toggleTheme}
@@ -449,6 +592,32 @@ export default function MainListItems() {
                   >
                     <LogOut size={20} />
                   </button>
+                </div>
+
+                {/* Language Selector Mobile */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+                    <Globe size={16} />
+                    <span>Idioma</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {languages.map(language => (
+                      <button
+                        key={language.code}
+                        onClick={() => handleLanguageChange(language.code)}
+                        className={`flex items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-medium transition-colors duration-150 ${
+                          currentLang.code === language.code
+                            ? "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
+                            : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:text-blue-700 dark:hover:text-blue-300"
+                        }`}
+                      >
+                        <span className="text-sm">{language.flag}</span>
+                        <span className="hidden sm:inline">
+                          {language.code.toUpperCase()}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
