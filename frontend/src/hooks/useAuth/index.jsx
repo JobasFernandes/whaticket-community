@@ -71,7 +71,7 @@ const useAuth = () => {
   }, []);
 
   useEffect(() => {
-    if (!isAuth || !user.id) return;
+    if (!isAuth || !user?.id) return;
 
     const socket = openSocket();
     if (!socket) return;
@@ -92,7 +92,7 @@ const useAuth = () => {
         socket.disconnect();
       }
     };
-  }, [user, isAuth]);
+  }, [user?.id, isAuth]);
 
   const handleLogin = async userData => {
     setLoading(true);

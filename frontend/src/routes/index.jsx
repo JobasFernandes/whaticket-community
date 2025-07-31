@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { BrowserRouter, Switch } from "react-router-dom";
+import { BrowserRouter, Switch, Redirect } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import LoggedInLayout from "../layout/index";
@@ -22,25 +22,41 @@ const PrivateRoutes = () => {
   const { isAuth, user, loading } = useContext(AuthContext);
 
   if (loading) {
-    return null;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+      </div>
+    );
   }
 
   if (!isAuth || !user?.id) {
-    return <Route exact path="*" component={() => null} isPrivate />;
+    return <Redirect to="/login" />;
   }
 
   return (
     <WhatsAppsProvider>
       <LoggedInLayout>
-        <Route exact path="/" component={Dashboard} isPrivate />
-        <Route exact path="/tickets/:ticketId?" component={Tickets} isPrivate />
-        <Route exact path="/connections" component={Connections} isPrivate />
-        <Route exact path="/contacts" component={Contacts} isPrivate />
-        <Route exact path="/users" component={Users} isPrivate />
-        <Route exact path="/quickAnswers" component={QuickAnswers} isPrivate />
-        <Route exact path="/Settings" component={Settings} isPrivate />
-        <Route exact path="/Queues" component={Queues} isPrivate />
-        <Route path="*" component={() => <Redirect to="/" />} isPrivate />
+        <Switch>
+          <Route exact path="/" component={Dashboard} isPrivate />
+          <Route
+            exact
+            path="/tickets/:ticketId?"
+            component={Tickets}
+            isPrivate
+          />
+          <Route exact path="/connections" component={Connections} isPrivate />
+          <Route exact path="/contacts" component={Contacts} isPrivate />
+          <Route exact path="/users" component={Users} isPrivate />
+          <Route
+            exact
+            path="/quickAnswers"
+            component={QuickAnswers}
+            isPrivate
+          />
+          <Route exact path="/Settings" component={Settings} isPrivate />
+          <Route exact path="/Queues" component={Queues} isPrivate />
+          <Redirect from="*" to="/" />
+        </Switch>
       </LoggedInLayout>
     </WhatsAppsProvider>
   );
