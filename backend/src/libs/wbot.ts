@@ -104,10 +104,15 @@ export const initWbot = async (whatsapp: Whatsapp): Promise<Session> => {
       wbot.on("ready", async () => {
         logger.info(`Session: ${sessionName} READY`);
 
+        // Get WhatsApp number from the session
+        const { info } = wbot;
+        const whatsappNumber = info.wid.user;
+
         await whatsapp.update({
           status: "CONNECTED",
           qrcode: "",
-          retries: 0
+          retries: 0,
+          number: whatsappNumber
         });
 
         io.emit("whatsappSession", {
