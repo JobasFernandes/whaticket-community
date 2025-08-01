@@ -18,8 +18,14 @@ const useAuth = () => {
     config => {
       const token = localStorage.getItem("token");
       if (token) {
-        config.headers["Authorization"] = `Bearer ${JSON.parse(token)}`;
-        setIsAuth(true);
+        try {
+          config.headers["Authorization"] = `Bearer ${JSON.parse(token)}`;
+          setIsAuth(true);
+        } catch (error) {
+          console.error("Error parsing token:", error);
+          localStorage.removeItem("token");
+          setIsAuth(false);
+        }
       }
       return config;
     },
@@ -63,6 +69,11 @@ const useAuth = () => {
           setIsAuth(true);
           setUser(data.user);
         } catch (err) {
+          console.error("Error refreshing token:", err);
+          localStorage.removeItem("token");
+          api.defaults.headers.Authorization = undefined;
+          setIsAuth(false);
+          setUser({});
           toastError(err);
         }
       }
@@ -81,15 +92,27 @@ const useAuth = () => {
     socket.on("user", data => {
       if (!isMounted) return;
 
-      if (data.action === "update" && data.user.id === user.id) {
-        setUser(data.user);
+      try {
+        if (data.action === "update" && data.user.id === user.id) {
+          setUser(data.user);
+        }
+      } catch (error) {
+        console.error("Error handling socket user event:", error);
       }
+    });
+
+    socket.on("connect_error", error => {
+      console.error("Socket connection error:", error);
     });
 
     return () => {
       isMounted = false;
-      if (socket) {
-        socket.disconnect();
+      try {
+        if (socket) {
+          socket.disconnect();
+        }
+      } catch (error) {
+        console.error("Error disconnecting socket:", error);
       }
     };
   }, [user?.id, isAuth]);

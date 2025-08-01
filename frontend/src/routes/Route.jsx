@@ -5,7 +5,9 @@ import { AuthContext } from "../context/Auth/AuthContext";
 import BackdropLoading from "../components/BackdropLoading/index";
 
 const Route = ({ component: Component, isPrivate = false, ...rest }) => {
-  const { isAuth, loading } = useContext(AuthContext);
+  const authContext = useContext(AuthContext);
+
+  const { isAuth = false, loading = true } = authContext || {};
 
   return (
     <RouterRoute

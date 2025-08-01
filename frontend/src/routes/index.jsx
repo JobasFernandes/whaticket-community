@@ -19,7 +19,7 @@ import { ThemeProvider } from "../context/DarkMode/index";
 import { I18nProvider } from "../context/I18n/index";
 import Route from "./Route";
 
-const PrivateRoutes = () => {
+const AppRoutes = () => {
   const { isAuth, user, loading } = useContext(AuthContext);
 
   if (loading) {
@@ -30,36 +30,47 @@ const PrivateRoutes = () => {
     );
   }
 
-  if (!isAuth || !user?.id) {
-    return <Redirect to="/login" />;
-  }
-
   return (
-    <WhatsAppsProvider>
-      <LoggedInLayout>
-        <Switch>
-          <Route exact path="/" component={Dashboard} isPrivate />
-          <Route
-            exact
-            path="/tickets/:ticketId?"
-            component={Tickets}
-            isPrivate
-          />
-          <Route exact path="/connections" component={Connections} isPrivate />
-          <Route exact path="/contacts" component={Contacts} isPrivate />
-          <Route exact path="/users" component={Users} isPrivate />
-          <Route
-            exact
-            path="/quickAnswers"
-            component={QuickAnswers}
-            isPrivate
-          />
-          <Route exact path="/Settings" component={Settings} isPrivate />
-          <Route exact path="/Queues" component={Queues} isPrivate />
-          <Redirect from="*" to="/" />
-        </Switch>
-      </LoggedInLayout>
-    </WhatsAppsProvider>
+    <Switch>
+      <Route exact path="/login" component={Login} />
+      <Route exact path="/signup" component={Signup} />
+
+      {/* Private Routes */}
+      {isAuth && user?.id ? (
+        <WhatsAppsProvider>
+          <LoggedInLayout>
+            <Switch>
+              <Route exact path="/" component={Dashboard} isPrivate />
+              <Route
+                exact
+                path="/tickets/:ticketId?"
+                component={Tickets}
+                isPrivate
+              />
+              <Route
+                exact
+                path="/connections"
+                component={Connections}
+                isPrivate
+              />
+              <Route exact path="/contacts" component={Contacts} isPrivate />
+              <Route exact path="/users" component={Users} isPrivate />
+              <Route
+                exact
+                path="/quickAnswers"
+                component={QuickAnswers}
+                isPrivate
+              />
+              <Route exact path="/Settings" component={Settings} isPrivate />
+              <Route exact path="/Queues" component={Queues} isPrivate />
+              <Redirect from="*" to="/" />
+            </Switch>
+          </LoggedInLayout>
+        </WhatsAppsProvider>
+      ) : (
+        <Redirect to="/login" />
+      )}
+    </Switch>
   );
 };
 
@@ -69,11 +80,7 @@ const Routes = () => {
       <AuthProvider>
         <I18nProvider>
           <ThemeProvider>
-            <Switch>
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/signup" component={Signup} />
-              <PrivateRoutes />
-            </Switch>
+            <AppRoutes />
             <ToastContainer autoClose={3000} />
           </ThemeProvider>
         </I18nProvider>
