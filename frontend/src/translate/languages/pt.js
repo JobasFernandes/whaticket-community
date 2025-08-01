@@ -133,7 +133,16 @@ const messages = {
           lastUpdate: "Última atualização",
           default: "Padrão",
           actions: "Ações",
-          session: "Sessão"
+          session: "Sessão",
+          number: "Número"
+        },
+        status: {
+          CONNECTED: "Conectado",
+          DISCONNECTED: "Desconectado",
+          qrcode: "QR Code",
+          OPENING: "Abrindo",
+          PAIRING: "Pareando",
+          TIMEOUT: "Timeout"
         }
       },
       whatsappModal: {
@@ -144,17 +153,52 @@ const messages = {
         form: {
           name: "Nome",
           default: "Padrão",
-          farewellMessage: "Mensagem de despedida"
+          mainInfo: "Informações Principais",
+          greetingMessage: "Mensagem de saudação",
+          farewellMessage: "Mensagem de despedida",
+          queues: "Filas"
         },
         buttons: {
           okAdd: "Adicionar",
           okEdit: "Salvar",
-          cancel: "Cancelar"
+          cancel: "Cancelar",
+          saving: "Salvando..."
         },
         success: "WhatsApp salvo com sucesso."
       },
+      queueSelect: {
+        placeholder: "Selecionar filas...",
+        selectedSingle: "fila selecionada",
+        selectedPlural: "filas selecionadas",
+        noQueues: "Nenhuma fila disponível"
+      },
+      common: {
+        mainInfo: "Informações Principais",
+        messages: "Mensagens",
+        queueSection: "Filas de Atendimento",
+        defaultWhatsApp: "Definir como WhatsApp padrão",
+        edit: "Editar",
+        delete: "Excluir",
+        save: "Salvar",
+        cancel: "Cancelar"
+      },
       qrCode: {
-        message: "Leia o QrCode para iniciar a sessão"
+        message: "Leia o QrCode para iniciar a sessão",
+        title: "Conectar WhatsApp",
+        loading: "Gerando QR Code...",
+        scanInstruction: "Escaneie o QR Code para conectar",
+        waiting: "Aguardando QR Code...",
+        stepsTitle: "Etapas para acessar",
+        step1Title: "Abra o WhatsApp",
+        step1Description: "no seu celular",
+        step2Title: "Toque em Mais opções",
+        step2Description: "no Android ou em Configurações no iPhone",
+        step3Title: "Toque em Dispositivos conectados",
+        step3Description: "e, em seguida, em Conectar dispositivo",
+        step4Title: "Escaneie o QR Code",
+        step4Description: "para confirmar",
+        securityNote:
+          "Mantenha seu telefone conectado à internet para sincronizar as mensagens."
       },
       contacts: {
         title: "Contatos",
@@ -208,6 +252,7 @@ const messages = {
           edit: "Editar Resposta Rápida"
         },
         form: {
+          mainInfo: "Informações Principais",
           shortcut: "Atalho",
           message: "Resposta Rápida"
         },
@@ -224,6 +269,7 @@ const messages = {
           edit: "Editar fila"
         },
         form: {
+          mainInfo: "Informações da Fila",
           name: "Nome",
           color: "Cor",
           greetingMessage: "Mensagem de saudação"
@@ -232,7 +278,8 @@ const messages = {
           okAdd: "Adicionar",
           okEdit: "Salvar",
           cancel: "Cancelar"
-        }
+        },
+        success: "Fila salva com sucesso."
       },
       userModal: {
         title: {
@@ -240,11 +287,13 @@ const messages = {
           edit: "Editar usuário"
         },
         form: {
+          mainInfo: "Informações Principais",
           name: "Nome",
           email: "Email",
           password: "Senha",
           profile: "Perfil",
-          whatsapp: "Conexão Padrão"
+          whatsapp: "Conexão Padrão",
+          queues: "Filas de Atendimento"
         },
         buttons: {
           okAdd: "Adicionar",
@@ -334,6 +383,18 @@ const messages = {
             profile: "Perfil",
             logout: "Sair"
           }
+        },
+        tooltips: {
+          theme: "Alternar tema",
+          notifications: "Notificações",
+          language: "Alterar idioma",
+          profile: "Perfil do usuário",
+          logout: "Sair",
+          menu: "Abrir menu",
+          connectionAlert: "Há conexões desconectadas - Clique para gerenciar",
+          themeLight: "Modo Claro",
+          themeDark: "Modo Escuro",
+          languageSection: "Idioma"
         }
       },
       notifications: {
@@ -354,11 +415,9 @@ const messages = {
         confirmationModal: {
           deleteTitle: "Excluir",
           deleteMessage:
-            "Você tem certeza? Essa ação não pode ser revertida! Os tickets dessa fila continuarão existindo, mas não terão mais nenhuma fila atribuída."
+            "Você tem certeza? Essa ação não pode ser revertida! Os tickets dessa fila continuarão existindo, mas não terão mais nenhuma fila atribuída.",
+          success: "Fila excluída com sucesso."
         }
-      },
-      queueSelect: {
-        inputLabel: "Filas"
       },
       quickAnswers: {
         title: "Respostas Rápidas",
@@ -404,9 +463,24 @@ const messages = {
       settings: {
         success: "Configurações salvas com sucesso.",
         title: "Configurações",
+        loading: "Carregando configurações...",
+        apiToken: {
+          title: "Token da API",
+          description:
+            "Token para acesso à API do sistema. Mantenha este token seguro e não o compartilhe.",
+          placeholder: "Carregando token...",
+          copyButton: "Copiar token",
+          copySuccess: "Token copiado para a área de transferência!",
+          copyError: "Erro ao copiar token",
+          securityTitle: "Segurança Importante",
+          securityDescription:
+            "Este token permite acesso total à API. Não compartilhe com terceiros e mantenha-o seguro."
+        },
         settings: {
           userCreation: {
             name: "Criação de usuário",
+            description:
+              "Controla se novos usuários podem se registrar no sistema",
             options: {
               enabled: "Ativado",
               disabled: "Desativado"
@@ -465,6 +539,11 @@ const messages = {
           title: "Apagar mensagem?",
           message: "Esta ação não pode ser revertida."
         }
+      },
+      errorBoundary: {
+        title: "Algo deu errado",
+        message: "Ocorreu um erro inesperado. Por favor, recarregue a página.",
+        button: "Recarregar página"
       },
       backendErrors: {
         ERR_NO_OTHER_WHATSAPP: "Deve haver pelo menos um WhatsApp padrão.",

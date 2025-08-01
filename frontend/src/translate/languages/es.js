@@ -134,7 +134,16 @@ const messages = {
           lastUpdate: "Última Actualización",
           default: "Por Defecto",
           actions: "Acciones",
-          session: "Sesión"
+          session: "Sesión",
+          number: "Número"
+        },
+        status: {
+          CONNECTED: "Conectado",
+          DISCONNECTED: "Desconectado",
+          qrcode: "Código QR",
+          OPENING: "Abriendo",
+          PAIRING: "Emparejando",
+          TIMEOUT: "Tiempo agotado"
         }
       },
       whatsappModal: {
@@ -144,17 +153,53 @@ const messages = {
         },
         form: {
           name: "Nombre",
-          default: "Por Defecto"
+          default: "Por Defecto",
+          mainInfo: "Información Principal",
+          greetingMessage: "Mensaje de Saludo",
+          farewellMessage: "Mensaje de Despedida",
+          queues: "Colas"
         },
         buttons: {
           okAdd: "Agregar",
           okEdit: "Guardar",
-          cancel: "Cancelar"
+          cancel: "Cancelar",
+          saving: "Guardando..."
         },
         success: "WhatsApp guardado satisfactoriamente."
       },
+      queueSelect: {
+        placeholder: "Seleccionar colas...",
+        selectedSingle: "cola seleccionada",
+        selectedPlural: "colas seleccionadas",
+        noQueues: "No hay colas disponibles"
+      },
+      common: {
+        mainInfo: "Información Principal",
+        messages: "Mensajes",
+        queueSection: "Colas de Atención",
+        defaultWhatsApp: "Establecer como WhatsApp predeterminado",
+        edit: "Editar",
+        delete: "Eliminar",
+        save: "Guardar",
+        cancel: "Cancelar"
+      },
       qrCode: {
-        message: "Lée el código QR para empezar la sesión."
+        message: "Lée el código QR para empezar la sesión.",
+        title: "Conectar WhatsApp",
+        loading: "Generando código QR...",
+        scanInstruction: "Escanea el código QR para conectar",
+        waiting: "Esperando código QR...",
+        stepsTitle: "Pasos para acceder",
+        step1Title: "Abre WhatsApp",
+        step1Description: "en tu teléfono",
+        step2Title: "Toca Más opciones",
+        step2Description: "en Android o Configuración en iPhone",
+        step3Title: "Toca Dispositivos vinculados",
+        step3Description: "luego toca Vincular un dispositivo",
+        step4Title: "Escanea el código QR",
+        step4Description: "para confirmar",
+        securityNote:
+          "Mantén tu teléfono conectado a internet para sincronizar mensajes."
       },
       contacts: {
         title: "Contactos",
@@ -209,6 +254,7 @@ const messages = {
           edit: "Editar respuesta rápida"
         },
         form: {
+          mainInfo: "Información Principal",
           shortcut: "Atajo",
           message: "Respuesta rápida"
         },
@@ -225,6 +271,7 @@ const messages = {
           edit: "Editar cola"
         },
         form: {
+          mainInfo: "Información de la Cola",
           name: "Nombre",
           color: "Color",
           greetingMessage: "Mensaje de saludo"
@@ -233,7 +280,8 @@ const messages = {
           okAdd: "Añadir",
           okEdit: "Ahorrar",
           cancel: "Cancelar"
-        }
+        },
+        success: "Cola guardada exitosamente."
       },
       userModal: {
         title: {
@@ -241,11 +289,13 @@ const messages = {
           edit: "Editar usuario"
         },
         form: {
+          mainInfo: "Información Principal",
           name: "Nombre",
           email: "Correo Electrónico",
           password: "Contraseña",
           profile: "Perfil",
-          whatsapp: "Conexión estándar"
+          whatsapp: "Conexión estándar",
+          queues: "Colas de Atención"
         },
         buttons: {
           okAdd: "Agregar",
@@ -335,6 +385,19 @@ const messages = {
             profile: "Perfil",
             logout: "Cerrar Sesión"
           }
+        },
+        tooltips: {
+          theme: "Cambiar tema",
+          notifications: "Notificaciones",
+          language: "Cambiar idioma",
+          profile: "Perfil del usuario",
+          logout: "Cerrar sesión",
+          menu: "Abrir menú",
+          connectionAlert:
+            "Hay conexiones desconectadas - Haga clic para administrar",
+          themeLight: "Modo Claro",
+          themeDark: "Modo Oscuro",
+          languageSection: "Idioma"
         }
       },
       notifications: {
@@ -355,11 +418,9 @@ const messages = {
         confirmationModal: {
           deleteTitle: "Eliminar",
           deleteMessage:
-            "¿Estás seguro? ¡Esta acción no se puede revertir! Los tickets en esa cola seguirán existiendo, pero ya no tendrán ninguna cola asignada."
+            "¿Estás seguro? ¡Esta acción no se puede revertir! Los tickets en esa cola seguirán existiendo, pero ya no tendrán ninguna cola asignada.",
+          success: "Cola eliminada exitosamente."
         }
-      },
-      queueSelect: {
-        inputLabel: "Linhas"
       },
       quickAnswers: {
         title: "Respuestas rápidas",
@@ -405,9 +466,24 @@ const messages = {
       settings: {
         success: "Configuración guardada satisfactoriamente.",
         title: "Configuración",
+        loading: "Cargando configuración...",
+        apiToken: {
+          title: "Token de API",
+          description:
+            "Token para acceso a la API del sistema. Mantén este token seguro y no lo compartas.",
+          placeholder: "Cargando token...",
+          copyButton: "Copiar token",
+          copySuccess: "¡Token copiado al portapapeles!",
+          copyError: "Error al copiar token",
+          securityTitle: "Seguridad Importante",
+          securityDescription:
+            "Este token permite acceso total a la API. No lo compartas con terceros y manténlo seguro."
+        },
         settings: {
           userCreation: {
             name: "Creación de usuarios",
+            description:
+              "Controla si nuevos usuarios pueden registrarse en el sistema",
             options: {
               enabled: "Habilitado",
               disabled: "Deshabilitado"
@@ -467,6 +543,11 @@ const messages = {
           title: "¿Borrar mensaje?",
           message: "Esta acción no puede ser revertida."
         }
+      },
+      errorBoundary: {
+        title: "Algo salió mal",
+        message: "Ocurrió un error inesperado. Por favor, recarga la página.",
+        button: "Recargar página"
       },
       backendErrors: {
         ERR_NO_OTHER_WHATSAPP:

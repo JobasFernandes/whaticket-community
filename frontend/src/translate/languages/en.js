@@ -132,7 +132,16 @@ const messages = {
           lastUpdate: "Last Update",
           default: "Default",
           actions: "Actions",
-          session: "Session"
+          session: "Session",
+          number: "Number"
+        },
+        status: {
+          CONNECTED: "Connected",
+          DISCONNECTED: "Disconnected",
+          qrcode: "QR Code",
+          OPENING: "Opening",
+          PAIRING: "Pairing",
+          TIMEOUT: "Timeout"
         }
       },
       whatsappModal: {
@@ -142,17 +151,53 @@ const messages = {
         },
         form: {
           name: "Name",
-          default: "Default"
+          default: "Default",
+          mainInfo: "Main Information",
+          greetingMessage: "Greeting Message",
+          farewellMessage: "Farewell Message",
+          queues: "Queues of Attendance"
         },
         buttons: {
           okAdd: "Add",
           okEdit: "Save",
-          cancel: "Cancel"
+          cancel: "Cancel",
+          saving: "Saving..."
         },
         success: "WhatsApp saved successfully."
       },
+      queueSelect: {
+        placeholder: "Select queues...",
+        selectedSingle: "queue selected",
+        selectedPlural: "queues selected",
+        noQueues: "No queues available"
+      },
+      common: {
+        mainInfo: "Main Information",
+        messages: "Messages",
+        queueSection: "Service Queues",
+        defaultWhatsApp: "Set as default WhatsApp",
+        edit: "Edit",
+        delete: "Delete",
+        save: "Save",
+        cancel: "Cancel"
+      },
       qrCode: {
-        message: "Read QrCode to start the session"
+        message: "Read QrCode to start the session",
+        title: "Connect WhatsApp",
+        loading: "Generating QR Code...",
+        scanInstruction: "Scan the QR Code to connect",
+        waiting: "Waiting for QR Code...",
+        stepsTitle: "Steps to access",
+        step1Title: "Open WhatsApp",
+        step1Description: "on your phone",
+        step2Title: "Tap More options",
+        step2Description: "on Android or Settings on iPhone",
+        step3Title: "Tap Linked devices",
+        step3Description: "then tap Link a device",
+        step4Title: "Scan the QR Code",
+        step4Description: "to confirm",
+        securityNote:
+          "Keep your phone connected to the internet to sync messages."
       },
       contacts: {
         title: "Contacts",
@@ -206,6 +251,7 @@ const messages = {
           edit: "Edit Quick Answer"
         },
         form: {
+          mainInfo: "Main Information",
           shortcut: "Shortcut",
           message: "Quick Reply"
         },
@@ -222,6 +268,7 @@ const messages = {
           edit: "Edit queue"
         },
         form: {
+          mainInfo: "Queue Information",
           name: "Name",
           color: "Color",
           greetingMessage: "Greeting Message"
@@ -230,7 +277,8 @@ const messages = {
           okAdd: "Add",
           okEdit: "Save",
           cancel: "Cancel"
-        }
+        },
+        success: "Queue saved successfully."
       },
       userModal: {
         title: {
@@ -238,11 +286,13 @@ const messages = {
           edit: "Edit user"
         },
         form: {
+          mainInfo: "Main Information",
           name: "Name",
           email: "Email",
           password: "Password",
           profile: "Profile",
-          whatsapp: "Default Connection"
+          whatsapp: "Default Connection",
+          queues: "Queues"
         },
         buttons: {
           okAdd: "Add",
@@ -331,6 +381,19 @@ const messages = {
             profile: "Profile",
             logout: "Logout"
           }
+        },
+        tooltips: {
+          theme: "Toggle theme",
+          notifications: "Notifications",
+          language: "Change language",
+          profile: "User profile",
+          logout: "Logout",
+          menu: "Open menu",
+          connectionAlert:
+            "There are disconnected connections - Click to manage",
+          themeLight: "Light Mode",
+          themeDark: "Dark Mode",
+          languageSection: "Language"
         }
       },
       notifications: {
@@ -351,11 +414,9 @@ const messages = {
         confirmationModal: {
           deleteTitle: "Delete",
           deleteMessage:
-            "Are you sure? It cannot be reverted! Tickets in this queue will still exist, but will not have any queues assigned."
+            "Are you sure? It cannot be reverted! Tickets in this queue will still exist, but will not have any queues assigned.",
+          success: "Queue deleted successfully."
         }
-      },
-      queueSelect: {
-        inputLabel: "Queues"
       },
       quickAnswers: {
         title: "Quick Answers",
@@ -400,9 +461,24 @@ const messages = {
       settings: {
         success: "Settings saved successfully.",
         title: "Settings",
+        loading: "Loading settings...",
+        apiToken: {
+          title: "API Token",
+          description:
+            "Token for system API access. Keep this token secure and do not share it.",
+          placeholder: "Loading token...",
+          copyButton: "Copy token",
+          copySuccess: "Token copied to clipboard!",
+          copyError: "Error copying token",
+          securityTitle: "Important Security",
+          securityDescription:
+            "This token allows full API access. Do not share with third parties and keep it secure."
+        },
         settings: {
           userCreation: {
             name: "User creation",
+            description:
+              "Controls whether new users can register in the system",
             options: {
               enabled: "Enabled",
               disabled: "Disabled"
@@ -460,6 +536,11 @@ const messages = {
           title: "Delete message?",
           message: "This action cannot be reverted."
         }
+      },
+      errorBoundary: {
+        title: "Something went wrong",
+        message: "An unexpected error occurred. Please reload the page.",
+        button: "Reload page"
       },
       backendErrors: {
         ERR_NO_OTHER_WHATSAPP:
