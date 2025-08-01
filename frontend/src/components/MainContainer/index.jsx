@@ -1,32 +1,12 @@
 import React from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-
-const useStyles = makeStyles(theme => ({
-  mainContainer: {
-    flex: 1,
-    // padding: theme.spacing(2),
-    // height: `calc(100% - 48px)`,
-    padding: 0,
-    height: "100%"
-  },
-
-  contentWrapper: {
-    height: "100%",
-    overflowY: "hidden",
-    display: "flex",
-    flexDirection: "column"
-  }
-}));
-
 const MainContainer = ({ children }) => {
-  const classes = useStyles();
-
   return (
-    <Container className={classes.mainContainer} maxWidth={false}>
-      <div className={classes.contentWrapper}>{children}</div>
-    </Container>
+    <div className="flex-1 h-full pb-2 max-w-none">
+      <div className="h-full overflow-hidden flex flex-col bg-white dark:bg-[#1e1e1e] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+        {children}
+      </div>
+    </div>
   );
 };
 

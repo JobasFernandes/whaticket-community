@@ -1,10 +1,11 @@
 import React from "react";
-import Typography from "@material-ui/core/Typography";
 
-export default function Title(props) {
+export default function Title({ children, className = "" }) {
   return (
-    <Typography variant="h5" color="primary" gutterBottom>
-      {props.children}
-    </Typography>
+    <h1
+      className={`text-xl ml-4 font-semibold text-gray-900 dark:text-white ${className}`}
+    >
+      {children}
+    </h1>
   );
 }
