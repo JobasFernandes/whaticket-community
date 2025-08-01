@@ -13,6 +13,7 @@ import Users from "../pages/Users/index";
 import Contacts from "../pages/Contacts/index";
 import QuickAnswers from "../pages/QuickAnswers/index";
 import Queues from "../pages/Queues/index";
+import SignupProtection from "../components/SignupProtection";
 import { AuthProvider, AuthContext } from "../context/Auth/AuthContext";
 import { WhatsAppsProvider } from "../context/WhatsApp/WhatsAppsContext";
 import { ThemeProvider } from "../context/DarkMode/index";
@@ -33,7 +34,15 @@ const AppRoutes = () => {
   return (
     <Switch>
       <Route exact path="/login" component={Login} />
-      <Route exact path="/signup" component={Signup} />
+      <Route
+        exact
+        path="/signup"
+        component={() => (
+          <SignupProtection>
+            <Signup />
+          </SignupProtection>
+        )}
+      />
 
       {/* Private Routes */}
       {isAuth && user?.id ? (
