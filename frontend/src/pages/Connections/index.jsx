@@ -1,100 +1,35 @@
-import React, { useState, useCallback, useContext } from "react";
+import { useContext, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import { format, parseISO } from "date-fns";
-
-import { makeStyles } from "@material-ui/core/styles";
-import { green } from "@material-ui/core/colors";
-import {
-  Button,
-  TableBody,
-  TableRow,
-  TableCell,
-  IconButton,
-  Table,
-  TableHead,
-  Paper,
-  Tooltip,
-  Typography,
-  CircularProgress
-} from "@material-ui/core";
 import {
   Edit,
+  Trash2,
+  Plus,
+  Smartphone,
+  Wifi,
+  WifiOff,
+  QrCode,
   CheckCircle,
-  SignalCellularConnectedNoInternet2Bar,
-  SignalCellularConnectedNoInternet0Bar,
-  SignalCellular4Bar,
-  CropFree,
-  DeleteOutline
-} from "@material-ui/icons";
+  XCircle,
+  Phone,
+  Battery,
+  Power
+} from "lucide-react";
 
 import MainContainer from "../../components/MainContainer";
 import MainHeader from "../../components/MainHeader";
 import MainHeaderButtonsWrapper from "../../components/MainHeaderButtonsWrapper";
-import Title from "../../components/Title";
 import TableRowSkeleton from "../../components/TableRowSkeleton";
-
+import Title from "../../components/Title";
+import { i18n } from "../../translate/i18n.js";
+import toastError from "../../errors/toastError.js";
 import api from "../../services/api.js";
 import WhatsAppModal from "../../components/WhatsAppModal";
-import ConfirmationModal from "../../components/ConfirmationModal";
 import QrcodeModal from "../../components/QrcodeModal";
-import { i18n } from "../../translate/i18n.js";
+import ConfirmationModal from "../../components/ConfirmationModal";
 import { WhatsAppsContext } from "../../context/WhatsApp/WhatsAppsContext";
-import toastError from "../../errors/toastError.js";
-
-const useStyles = makeStyles(theme => ({
-  mainPaper: {
-    flex: 1,
-    padding: theme.spacing(1),
-    overflowY: "scroll",
-    ...theme.scrollbarStyles
-  },
-  customTableCell: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  tooltip: {
-    backgroundColor: "#f5f5f9",
-    color: "rgba(0, 0, 0, 0.87)",
-    fontSize: theme.typography.pxToRem(14),
-    border: "1px solid #dadde9",
-    maxWidth: 450
-  },
-  tooltipPopper: {
-    textAlign: "center"
-  },
-  buttonProgress: {
-    color: green[500]
-  }
-}));
-
-const CustomToolTip = ({ title, content, children }) => {
-  const classes = useStyles();
-
-  return (
-    <Tooltip
-      arrow
-      classes={{
-        tooltip: classes.tooltip,
-        popper: classes.tooltipPopper
-      }}
-      title={
-        <React.Fragment>
-          <Typography gutterBottom color="inherit">
-            {title}
-          </Typography>
-          {content && <Typography>{content}</Typography>}
-        </React.Fragment>
-      }
-    >
-      {children}
-    </Tooltip>
-  );
-};
 
 const Connections = () => {
-  const classes = useStyles();
-
   const { whatsApps, loading } = useContext(WhatsAppsContext);
   const [whatsAppModalOpen, setWhatsAppModalOpen] = useState(false);
   const [qrModalOpen, setQrModalOpen] = useState(false);
@@ -143,8 +78,8 @@ const Connections = () => {
   };
 
   const handleCloseQrModal = useCallback(() => {
-    setSelectedWhatsApp(null);
     setQrModalOpen(false);
+    setSelectedWhatsApp(null);
   }, [setQrModalOpen, setSelectedWhatsApp]);
 
   const handleEditWhatsApp = whatsApp => {
@@ -192,101 +127,120 @@ const Connections = () => {
     }
 
     setConfirmModalInfo(confirmationModalInitialState);
+    setConfirmModalOpen(false);
   };
 
   const renderActionButtons = whatsApp => {
     return (
-      <>
+      <div className="flex items-center justify-center gap-1">
         {whatsApp.status === "qrcode" && (
-          <Button
-            size="small"
-            variant="contained"
-            color="primary"
+          <button
             onClick={() => handleOpenQrModal(whatsApp)}
+            className="p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
+            title="QR Code"
           >
-            {i18n.t("connections.buttons.qrcode")}
-          </Button>
+            <QrCode className="w-3.5 h-3.5" />
+          </button>
         )}
         {whatsApp.status === "DISCONNECTED" && (
-          <>
-            <Button
-              size="small"
-              variant="outlined"
-              color="primary"
-              onClick={() => handleStartWhatsAppSession(whatsApp.id)}
-            >
-              {i18n.t("connections.buttons.tryAgain")}
-            </Button>{" "}
-            <Button
-              size="small"
-              variant="outlined"
-              color="secondary"
-              onClick={() => handleRequestNewQrCode(whatsApp.id)}
-            >
-              {i18n.t("connections.buttons.newQr")}
-            </Button>
-          </>
+          <button
+            onClick={() => handleStartWhatsAppSession(whatsApp.id)}
+            className="p-1.5 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/30 rounded transition-colors"
+            title="Iniciar"
+          >
+            <Power className="w-3.5 h-3.5" />
+          </button>
         )}
         {(whatsApp.status === "CONNECTED" ||
           whatsApp.status === "PAIRING" ||
           whatsApp.status === "TIMEOUT") && (
-          <Button
-            size="small"
-            variant="outlined"
-            color="secondary"
-            onClick={() => {
-              handleOpenConfirmationModal("disconnect", whatsApp.id);
-            }}
+          <button
+            onClick={() =>
+              handleOpenConfirmationModal("disconnect", whatsApp.id)
+            }
+            className="p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+            title="Desconectar"
           >
-            {i18n.t("connections.buttons.disconnect")}
-          </Button>
+            <WifiOff className="w-3.5 h-3.5" />
+          </button>
         )}
         {whatsApp.status === "OPENING" && (
-          <Button size="small" variant="outlined" disabled color="default">
-            {i18n.t("connections.buttons.connecting")}
-          </Button>
-        )}
-      </>
-    );
-  };
-
-  const renderStatusToolTips = whatsApp => {
-    return (
-      <div className={classes.customTableCell}>
-        {whatsApp.status === "DISCONNECTED" && (
-          <CustomToolTip
-            title={i18n.t("connections.toolTips.disconnected.title")}
-            content={i18n.t("connections.toolTips.disconnected.content")}
+          <button
+            onClick={() => handleRequestNewQrCode(whatsApp.id)}
+            className="p-1.5 text-orange-600 hover:text-orange-800 dark:text-orange-400 dark:hover:text-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded transition-colors"
+            title="Reiniciar"
           >
-            <SignalCellularConnectedNoInternet0Bar color="secondary" />
-          </CustomToolTip>
-        )}
-        {whatsApp.status === "OPENING" && (
-          <CircularProgress size={24} className={classes.buttonProgress} />
-        )}
-        {whatsApp.status === "qrcode" && (
-          <CustomToolTip
-            title={i18n.t("connections.toolTips.qrcode.title")}
-            content={i18n.t("connections.toolTips.qrcode.content")}
-          >
-            <CropFree />
-          </CustomToolTip>
-        )}
-        {whatsApp.status === "CONNECTED" && (
-          <CustomToolTip title={i18n.t("connections.toolTips.connected.title")}>
-            <SignalCellular4Bar style={{ color: green[500] }} />
-          </CustomToolTip>
-        )}
-        {(whatsApp.status === "TIMEOUT" || whatsApp.status === "PAIRING") && (
-          <CustomToolTip
-            title={i18n.t("connections.toolTips.timeout.title")}
-            content={i18n.t("connections.toolTips.timeout.content")}
-          >
-            <SignalCellularConnectedNoInternet2Bar color="secondary" />
-          </CustomToolTip>
+            <QrCode className="w-3.5 h-3.5" />
+          </button>
         )}
       </div>
     );
+  };
+
+  const renderStatusBadge = whatsApp => {
+    const statusConfig = {
+      CONNECTED: {
+        color:
+          "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300",
+        icon: CheckCircle,
+        text: i18n.t("connections.status.CONNECTED")
+      },
+      DISCONNECTED: {
+        color: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300",
+        icon: XCircle,
+        text: i18n.t("connections.status.DISCONNECTED")
+      },
+      qrcode: {
+        color:
+          "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300",
+        icon: QrCode,
+        text: i18n.t("connections.status.qrcode")
+      },
+      OPENING: {
+        color:
+          "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
+        icon: Wifi,
+        text: i18n.t("connections.status.OPENING")
+      },
+      PAIRING: {
+        color:
+          "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300",
+        icon: Smartphone,
+        text: i18n.t("connections.status.PAIRING")
+      },
+      TIMEOUT: {
+        color:
+          "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300",
+        icon: XCircle,
+        text: i18n.t("connections.status.TIMEOUT")
+      }
+    };
+
+    const config = statusConfig[whatsApp.status] || statusConfig.DISCONNECTED;
+    const Icon = config.icon;
+
+    return (
+      <span
+        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${config.color}`}
+      >
+        <Icon className="h-3 w-3 mr-1" />
+        {config.text}
+      </span>
+    );
+  };
+
+  const formatPhoneNumber = number => {
+    if (!number) return "-";
+
+    // Format Brazilian phone numbers
+    if (number.length === 13 && number.startsWith("55")) {
+      const ddd = number.slice(2, 4);
+      const phoneNumber = number.slice(4);
+      return `+55 (${ddd}) ${phoneNumber.slice(0, 5)}-${phoneNumber.slice(5)}`;
+    }
+
+    // For other countries, just add + prefix
+    return `+${number}`;
   };
 
   return (
@@ -294,7 +248,7 @@ const Connections = () => {
       <ConfirmationModal
         title={confirmModalInfo.title}
         open={confirmModalOpen}
-        onClose={setConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
         onConfirm={handleSubmitConfirmationModal}
       >
         {confirmModalInfo.message}
@@ -309,91 +263,176 @@ const Connections = () => {
         onClose={handleCloseWhatsAppModal}
         whatsAppId={!qrModalOpen && selectedWhatsApp?.id}
       />
+
+      {/* Mobile title */}
+      <div className="md:hidden px-4 py-2">
+        <Title className="text-center">{i18n.t("connections.title")}</Title>
+      </div>
+
       <MainHeader>
-        <Title>{i18n.t("connections.title")}</Title>
+        {/* Desktop title */}
+        <div className="hidden md:block">
+          <Title>{i18n.t("connections.title")}</Title>
+        </div>
+
         <MainHeaderButtonsWrapper>
-          <Button
-            variant="contained"
-            color="primary"
+          <button
             onClick={handleOpenWhatsAppModal}
+            className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 rounded-lg transition-all duration-200"
+            title={i18n.t("connections.buttons.add")}
           >
-            {i18n.t("connections.buttons.add")}
-          </Button>
+            <Plus className="w-4 h-4" />
+            <span className="hidden md:inline">
+              {i18n.t("connections.buttons.add")}
+            </span>
+          </button>
         </MainHeaderButtonsWrapper>
       </MainHeader>
-      <Paper className={classes.mainPaper} variant="outlined">
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">
-                {i18n.t("connections.table.name")}
-              </TableCell>
-              <TableCell align="center">
-                {i18n.t("connections.table.status")}
-              </TableCell>
-              <TableCell align="center">
-                {i18n.t("connections.table.session")}
-              </TableCell>
-              <TableCell align="center">
-                {i18n.t("connections.table.lastUpdate")}
-              </TableCell>
-              <TableCell align="center">
-                {i18n.t("connections.table.default")}
-              </TableCell>
-              <TableCell align="center">
-                {i18n.t("connections.table.actions")}
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {loading ? (
-              <TableRowSkeleton />
-            ) : (
-              <>
-                {whatsApps?.length > 0 &&
-                  whatsApps.map(whatsApp => (
-                    <TableRow key={whatsApp.id}>
-                      <TableCell align="center">{whatsApp.name}</TableCell>
-                      <TableCell align="center">
-                        {renderStatusToolTips(whatsApp)}
-                      </TableCell>
-                      <TableCell align="center">
-                        {renderActionButtons(whatsApp)}
-                      </TableCell>
-                      <TableCell align="center">
-                        {format(parseISO(whatsApp.updatedAt), "dd/MM/yy HH:mm")}
-                      </TableCell>
-                      <TableCell align="center">
-                        {whatsApp.isDefault && (
-                          <div className={classes.customTableCell}>
-                            <CheckCircle style={{ color: green[500] }} />
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell align="center">
-                        <IconButton
-                          size="small"
-                          onClick={() => handleEditWhatsApp(whatsApp)}
-                        >
-                          <Edit />
-                        </IconButton>
 
-                        <IconButton
-                          size="small"
-                          onClick={e => {
-                            handleOpenConfirmationModal("delete", whatsApp.id);
-                          }}
+      {/* Connections Table */}
+      <div className="flex-1 overflow-hidden bg-white dark:bg-[#1e1e1e] border border-gray-200 dark:border-gray-700">
+        <div className="h-full overflow-y-auto custom-scrollbar">
+          <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-800/50 sticky top-0">
+              <tr>
+                {/* Name column */}
+                <th className="px-4 py-1 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  {i18n.t("connections.table.name")}
+                </th>
+                {/* Number column - hidden on mobile */}
+                <th className="hidden md:table-cell px-4 py-1 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  {i18n.t("connections.table.number")}
+                </th>
+                {/* Status column - hidden on mobile */}
+                <th className="hidden lg:table-cell px-4 py-1 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  {i18n.t("connections.table.status")}
+                </th>
+                {/* Last Update column - hidden on mobile and tablet */}
+                <th className="hidden xl:table-cell px-4 py-1 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  {i18n.t("connections.table.lastUpdate")}
+                </th>
+                {/* Default column - hidden on mobile */}
+                <th className="hidden lg:table-cell px-4 py-1 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider min-w-[180px]">
+                  {i18n.t("connections.table.default")}
+                </th>
+                {/* Actions column */}
+                <th className="px-4 py-1 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-32">
+                  {i18n.t("connections.table.actions")}
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white dark:bg-[#1e1e1e] divide-y divide-gray-200 dark:divide-gray-700">
+              {loading ? (
+                <TableRowSkeleton columns={6} />
+              ) : (
+                whatsApps?.length > 0 &&
+                whatsApps.map(whatsApp => (
+                  <tr
+                    key={whatsApp.id}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-200"
+                  >
+                    {/* Name with connection info on mobile */}
+                    <td className="px-4 py-1">
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                          <Smartphone className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                            {whatsApp.name}
+                          </div>
+                          {/* Mobile info */}
+                          <div className="md:hidden space-y-1 mt-1">
+                            {whatsApp.number && (
+                              <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-300">
+                                <Phone className="h-3 w-3 flex-shrink-0" />
+                                <span>
+                                  {formatPhoneNumber(whatsApp.number)}
+                                </span>
+                              </div>
+                            )}
+                            <div className="flex items-center gap-2">
+                              {renderStatusBadge(whatsApp)}
+                              {whatsApp.isDefault && (
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
+                                  <CheckCircle className="h-3 w-3 mr-1" />
+                                  Padrão
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              {format(
+                                parseISO(whatsApp.updatedAt),
+                                "dd/MM/yy HH:mm"
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Number - hidden on mobile */}
+                    <td className="hidden md:table-cell px-4 py-1">
+                      <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-300">
+                        <Phone className="h-3 w-3 flex-shrink-0" />
+                        <span>{formatPhoneNumber(whatsApp.number)}</span>
+                      </div>
+                    </td>
+
+                    {/* Status - hidden on mobile */}
+                    <td className="hidden lg:table-cell px-4 py-1 text-center">
+                      {renderStatusBadge(whatsApp)}
+                    </td>
+
+                    {/* Last Update - hidden on mobile and tablet */}
+                    <td className="hidden xl:table-cell px-4 py-1 text-center">
+                      <div className="text-sm text-gray-600 dark:text-gray-300">
+                        {format(parseISO(whatsApp.updatedAt), "dd/MM/yy HH:mm")}
+                      </div>
+                    </td>
+
+                    {/* Default - hidden on mobile */}
+                    <td className="hidden lg:table-cell px-4 py-1 text-center">
+                      {whatsApp.isDefault && (
+                        <div className="flex items-center justify-center">
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                        </div>
+                      )}
+                    </td>
+
+                    {/* Actions */}
+                    <td className="px-4 py-1">
+                      <div className="flex items-center justify-center gap-1">
+                        {renderActionButtons(whatsApp)}
+
+                        {/* Edit Button */}
+                        <button
+                          onClick={() => handleEditWhatsApp(whatsApp)}
+                          className="p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
+                          title={i18n.t("common.edit")}
                         >
-                          <DeleteOutline />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </>
-            )}
-          </TableBody>
-        </Table>
-      </Paper>
+                          <Edit className="w-3.5 h-3.5" />
+                        </button>
+
+                        {/* Delete Button */}
+                        <button
+                          onClick={() =>
+                            handleOpenConfirmationModal("delete", whatsApp.id)
+                          }
+                          className="p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+                          title="Excluir"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </MainContainer>
   );
 };
