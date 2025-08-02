@@ -3,24 +3,31 @@ import CheckContactOpenTickets from "../../helpers/CheckContactOpenTickets";
 import GetDefaultWhatsApp from "../../helpers/GetDefaultWhatsApp";
 import Ticket from "../../models/Ticket";
 import User from "../../models/User";
+import Queue from "../../models/Queue";
+import Whatsapp from "../../models/Whatsapp";
 import ShowContactService from "../ContactServices/ShowContactService";
+import ShowWhatsAppService from "../WhatsappService/ShowWhatsAppService";
 
 interface Request {
   contactId: number;
   status: string;
   userId: number;
   queueId?: number;
+  whatsappId?: number;
 }
 
 const CreateTicketService = async ({
   contactId,
   status,
   userId,
-  queueId
+  queueId,
+  whatsappId
 }: Request): Promise<Ticket> => {
-  const defaultWhatsapp = await GetDefaultWhatsApp(userId);
+  const whatsapp = whatsappId
+    ? await ShowWhatsAppService(whatsappId)
+    : await GetDefaultWhatsApp(userId);
 
-  await CheckContactOpenTickets(contactId, defaultWhatsapp.id);
+  await CheckContactOpenTickets(contactId, whatsapp.id);
 
   const { isGroup } = await ShowContactService(contactId);
 
@@ -29,7 +36,7 @@ const CreateTicketService = async ({
     queueId = user?.queues.length === 1 ? user.queues[0].id : undefined;
   }
 
-  const { id }: Ticket = await defaultWhatsapp.$create("ticket", {
+  const { id }: Ticket = await whatsapp.$create("ticket", {
     contactId,
     status,
     isGroup,
@@ -37,7 +44,26 @@ const CreateTicketService = async ({
     queueId
   });
 
-  const ticket = await Ticket.findByPk(id, { include: ["contact"] });
+  const ticket = await Ticket.findByPk(id, {
+    include: [
+      "contact",
+      {
+        model: Queue,
+        as: "queue",
+        attributes: ["id", "name", "color"]
+      },
+      {
+        model: Whatsapp,
+        as: "whatsapp",
+        attributes: ["id", "name"]
+      },
+      {
+        model: User,
+        as: "user",
+        attributes: ["id", "name"]
+      }
+    ]
+  });
 
   if (!ticket) {
     throw new AppError("ERR_CREATING_TICKET");

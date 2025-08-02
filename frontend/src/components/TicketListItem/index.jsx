@@ -2,18 +2,21 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { parseISO, format, isSameDay } from "date-fns";
 import clsx from "clsx";
-import { User } from "lucide-react";
+import { User, Check } from "lucide-react";
 
 import { i18n } from "../../translate/i18n.js";
 import api from "../../services/api.js";
 import ButtonWithSpinner from "../ButtonWithSpinner";
 import MarkdownWrapper from "../MarkdownWrapper";
-import { AuthContext } from "../../context/Auth/AuthContext";
+import AcceptTicketWithoutQueueModal from "../AcceptTicketWithoutQueueModal";
+import { AuthContext } from "../../context/Auth/context";
 import toastError from "../../errors/toastError.js";
 
 const TicketListItem = ({ ticket }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
+  const [resolveLoading, setResolveLoading] = useState(false);
+  const [acceptModalOpen, setAcceptModalOpen] = useState(false);
   const { ticketId } = useParams();
   const isMounted = useRef(true);
   const { user } = useContext(AuthContext);
@@ -25,24 +28,107 @@ const TicketListItem = ({ ticket }) => {
   }, []);
 
   const handleAcepptTicket = async id => {
-    setLoading(true);
-    try {
-      await api.put(`/tickets/${id}`, {
-        status: "open",
-        userId: user?.id
-      });
-    } catch (err) {
-      setLoading(false);
-      toastError(err);
+    // Se o ticket já tem uma queue, aceita diretamente
+    if (ticket.queueId) {
+      setLoading(true);
+      try {
+        await api.put(`/tickets/${id}`, {
+          status: "open",
+          userId: user?.id
+        });
+        if (isMounted.current) {
+          setLoading(false);
+        }
+        history.push(`/tickets/${id}`);
+      } catch (err) {
+        setLoading(false);
+        toastError(err);
+      }
+    } else {
+      // Se não tem queue, abrir modal para selecionar
+      setAcceptModalOpen(true);
     }
+  };
+
+  const handleAcceptWithQueue = async ticketId => {
+    // Callback chamado após aceitar ticket com queue selecionada
     if (isMounted.current) {
       setLoading(false);
     }
-    history.push(`/tickets/${id}`);
+    history.push(`/tickets/${ticketId}`);
+  };
+
+  const handleCloseAcceptModal = () => {
+    setAcceptModalOpen(false);
+  };
+
+  const handleResolveTicket = async e => {
+    e.stopPropagation();
+    setResolveLoading(true);
+    try {
+      await api.put(`/tickets/${ticket.id}`, {
+        status: "closed",
+        userId: user?.id
+      });
+      if (isMounted.current) {
+        setResolveLoading(false);
+      }
+      // Redirecionar para a lista de tickets após resolver
+      history.push("/tickets");
+    } catch (err) {
+      setResolveLoading(false);
+      toastError(err);
+    }
   };
 
   const handleSelectTicket = id => {
     history.push(`/tickets/${id}`);
+  };
+
+  const getMediaTypeText = message => {
+    if (!message) return message;
+
+    if (message.includes(".")) {
+      const extension = message.toLowerCase().split(".").pop();
+
+      if (["jpg", "jpeg", "png", "gif", "webp"].includes(extension)) {
+        return "📷 Foto";
+      }
+      if (["mp4", "avi", "mov", "wmv", "webm"].includes(extension)) {
+        return "🎥 Vídeo";
+      }
+      if (["mp3", "wav", "ogg", "aac", "m4a"].includes(extension)) {
+        return "🎵 Áudio";
+      }
+      if (
+        ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt"].includes(
+          extension
+        )
+      ) {
+        return "📄 Documento";
+      }
+      if (["zip", "rar", "7z", "tar", "gz"].includes(extension)) {
+        return "📦 Arquivo";
+      }
+
+      if (message.includes("-") && message.length > 20) {
+        return "📎 Arquivo";
+      }
+    }
+
+    if (message.includes("|") && message.match(/^-?\d+\.\d+,-?\d+\.\d+/)) {
+      return "📍 Localização";
+    }
+
+    if (
+      message.includes("BEGIN:VCARD") ||
+      message.includes("FN:") ||
+      message.includes("TEL:")
+    ) {
+      return "👤 Contato";
+    }
+
+    return message;
   };
 
   const isSelected = ticketId && +ticketId === ticket.id;
@@ -53,7 +139,7 @@ const TicketListItem = ({ ticket }) => {
     <div className="relative">
       <div
         className={clsx(
-          "relative flex items-center px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150 cursor-pointer border-l-4",
+          "relative flex items-center px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 cursor-pointer border-l-4",
           {
             "bg-blue-50 dark:bg-blue-900/20 border-l-blue-500": isSelected,
             "border-l-transparent": !isSelected,
@@ -113,15 +199,31 @@ const TicketListItem = ({ ticket }) => {
               {/* Status badge */}
               {isClosed && (
                 <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
-                  Fechado
+                  {i18n.t("ticketsList.status.closed")}
                 </span>
               )}
 
               {/* Pending badge */}
               {isPending && (
                 <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300">
-                  Pendente
+                  {i18n.t("ticketsList.status.pending")}
                 </span>
+              )}
+
+              {/* Resolve button for open tickets */}
+              {ticket.status === "open" && (
+                <ButtonWithSpinner
+                  color="primary"
+                  variant="contained"
+                  size="small"
+                  loading={resolveLoading}
+                  onClick={handleResolveTicket}
+                  style={{ padding: "4px" }}
+                  className="!inline-flex !items-center px-1.5 py-0.5 !text-xs !font-medium !rounded !bg-green-600 hover:!bg-green-700 !text-white !shadow-none !border-none !min-h-0 !h-auto !leading-none"
+                >
+                  {!resolveLoading && <Check size={12} className="mr-1" />}
+                  {i18n.t("ticketsList.buttons.resolve")}
+                </ButtonWithSpinner>
               )}
 
               {/* Time */}
@@ -147,7 +249,9 @@ const TicketListItem = ({ ticket }) => {
                       : "text-gray-600 dark:text-gray-400"
                   )}
                 >
-                  <MarkdownWrapper>{ticket.lastMessage}</MarkdownWrapper>
+                  <MarkdownWrapper>
+                    {getMediaTypeText(ticket.lastMessage)}
+                  </MarkdownWrapper>
                 </div>
               ) : (
                 <div
@@ -158,7 +262,9 @@ const TicketListItem = ({ ticket }) => {
                       : "text-gray-400 dark:text-gray-500"
                   )}
                 >
-                  {isPending ? "Aguardando atendimento" : "Sem mensagens"}
+                  {isPending
+                    ? i18n.t("ticketsList.messages.pending")
+                    : i18n.t("ticketsList.messages.noMessages")}
                 </div>
               )}
             </div>
@@ -208,7 +314,17 @@ const TicketListItem = ({ ticket }) => {
       </div>
 
       {/* Divider */}
-      <div className="border-b border-gray-200 dark:border-gray-700 ml-11" />
+      <div className="border-b border-gray-200 dark:border-gray-600 ml-11" />
+
+      {/* Accept Ticket Modal - só aparece para tickets sem queue */}
+      {!ticket.queueId && (
+        <AcceptTicketWithoutQueueModal
+          modalOpen={acceptModalOpen}
+          onClose={handleCloseAcceptModal}
+          ticket={ticket}
+          onAccept={handleAcceptWithQueue}
+        />
+      )}
     </div>
   );
 };
