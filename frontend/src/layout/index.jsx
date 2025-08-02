@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import MainListItems from "./MainListItems";
-import { AuthContext } from "../context/Auth/AuthContext";
+import { AuthContext } from "../context/Auth/context";
 import BackdropLoading from "../components/BackdropLoading";
 
 const LoggedInLayout = ({ children }) => {

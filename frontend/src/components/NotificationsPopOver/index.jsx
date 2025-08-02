@@ -9,7 +9,7 @@ import TicketListItem from "../TicketListItem";
 import { i18n } from "../../translate/i18n.js";
 import useTickets from "../../hooks/useTickets";
 import alertSound from "../../assets/sound.mp3";
-import { AuthContext } from "../../context/Auth/AuthContext";
+import { AuthContext } from "../../context/Auth/context";
 
 const NotificationsPopOver = () => {
   const history = useHistory();

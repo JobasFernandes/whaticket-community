@@ -1,6 +1,5 @@
-import { useState, createContext } from "react";
-
-const ReplyMessageContext = createContext();
+import { useState } from "react";
+import { ReplyMessageContext } from "./context";
 
 const ReplyMessageProvider = ({ children }) => {
   const [replyingMessage, setReplyingMessage] = useState(null);
@@ -14,4 +13,4 @@ const ReplyMessageProvider = ({ children }) => {
   );
 };
 
-export { ReplyMessageContext, ReplyMessageProvider };
+export default ReplyMessageProvider;

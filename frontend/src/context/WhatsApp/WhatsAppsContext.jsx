@@ -1,9 +1,8 @@
-import { createContext, useContext } from "react";
+import { useContext } from "react";
 
 import useWhatsApps from "../../hooks/useWhatsApps";
-import { AuthContext } from "../Auth/AuthContext";
-
-const WhatsAppsContext = createContext();
+import { AuthContext } from "../Auth/context";
+import { WhatsAppsContext } from "./context";
 
 const WhatsAppsProvider = ({ children }) => {
   const { isAuth } = useContext(AuthContext);
@@ -16,4 +15,4 @@ const WhatsAppsProvider = ({ children }) => {
   );
 };
 
-export { WhatsAppsContext, WhatsAppsProvider };
+export default WhatsAppsProvider;

@@ -18,6 +18,7 @@ import api from "../../services/api.js";
 import TableRowSkeleton from "../../components/TableRowSkeleton";
 import ContactModal from "../../components/ContactModal";
 import ConfirmationModal from "../../components/ConfirmationModal/";
+import NewTicketModal from "../../components/NewTicketModal";
 
 import { i18n } from "../../translate/i18n.js";
 import MainHeader from "../../components/MainHeader";
@@ -25,7 +26,7 @@ import Title from "../../components/Title";
 import MainHeaderButtonsWrapper from "../../components/MainHeaderButtonsWrapper";
 import MainContainer from "../../components/MainContainer";
 import toastError from "../../errors/toastError.js";
-import { AuthContext } from "../../context/Auth/AuthContext";
+import { AuthContext } from "../../context/Auth/context";
 import { Can } from "../../components/Can";
 
 const reducer = (state, action) => {
@@ -85,6 +86,9 @@ const Contacts = () => {
   const [deletingContact, setDeletingContact] = useState(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [hasMore, setHasMore] = useState(false);
+  const [newTicketModalOpen, setNewTicketModalOpen] = useState(false);
+  const [selectedContactForTicket, setSelectedContactForTicket] =
+    useState(null);
 
   useEffect(() => {
     dispatch({ type: "RESET" });
@@ -143,20 +147,19 @@ const Contacts = () => {
     setContactModalOpen(false);
   };
 
+  const handleCloseNewTicketModal = () => {
+    setSelectedContactForTicket(null);
+    setNewTicketModalOpen(false);
+  };
+
   const handleSaveTicket = async contactId => {
     if (!contactId) return;
-    setLoading(true);
-    try {
-      const { data: ticket } = await api.post("/tickets", {
-        contactId: contactId,
-        userId: user?.id,
-        status: "open"
-      });
-      history.push(`/tickets/${ticket.id}`);
-    } catch (err) {
-      toastError(err);
-    }
-    setLoading(false);
+
+    const contact = contacts.find(c => c.id === contactId);
+    if (!contact) return;
+
+    setSelectedContactForTicket(contact);
+    setNewTicketModalOpen(true);
   };
 
   const hadleEditContact = contactId => {
@@ -208,6 +211,11 @@ const Contacts = () => {
         open={contactModalOpen}
         onClose={handleCloseContactModal}
         contactId={selectedContactId}
+      />
+      <NewTicketModal
+        modalOpen={newTicketModalOpen}
+        onClose={handleCloseNewTicketModal}
+        initialContact={selectedContactForTicket}
       />
       <ConfirmationModal
         title={
@@ -286,11 +294,11 @@ const Contacts = () => {
       </MainHeader>
 
       {/* Contacts Table */}
-      <div
-        className="flex-1 overflow-hidden bg-white dark:bg-[#1e1e1e] border border-gray-200 dark:border-gray-700"
-        onScroll={handleScroll}
-      >
-        <div className="h-full overflow-y-auto custom-scrollbar">
+      <div className="flex-1 overflow-hidden bg-white dark:bg-[#1e1e1e] border border-gray-200 dark:border-gray-700">
+        <div
+          className="h-full overflow-y-auto custom-scrollbar"
+          onScroll={handleScroll}
+        >
           <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-800/50 sticky top-0">
               <tr>
@@ -392,7 +400,7 @@ const Contacts = () => {
                       <button
                         onClick={() => handleSaveTicket(contact.id)}
                         className="p-1.5 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/30 rounded transition-colors"
-                        title="Criar ticket"
+                        title={i18n.t("contacts.tooltips.createTicket")}
                       >
                         <MessageCircle className="w-3.5 h-3.5" />
                       </button>
@@ -401,7 +409,7 @@ const Contacts = () => {
                       <button
                         onClick={() => hadleEditContact(contact.id)}
                         className="p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
-                        title="Editar contato"
+                        title={i18n.t("contacts.tooltips.editContact")}
                       >
                         <Edit className="w-3.5 h-3.5" />
                       </button>
@@ -417,7 +425,7 @@ const Contacts = () => {
                               setConfirmOpen(true);
                             }}
                             className="p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
-                            title="Excluir contato"
+                            title={i18n.t("contacts.tooltips.deleteContact")}
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>

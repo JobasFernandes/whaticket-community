@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { getHoursCloseTicketsAuto } from "../../config.js";
 import toastError from "../../errors/toastError.js";
-import { AuthContext } from "../../context/Auth/AuthContext";
+import { AuthContext } from "../../context/Auth/context";
 
 import api from "../../services/api.js";
 

@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   createTheme,
@@ -6,10 +6,9 @@ import {
 } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
 import { ptBR } from "@material-ui/core/locale";
+import { ThemeContext } from "./context";
 
-const ThemeContext = createContext();
-
-export const ThemeProvider = ({ children }) => {
+const ThemeProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem("whaticket-darkMode");
     return savedTheme ? JSON.parse(savedTheme) : false;
@@ -120,4 +119,4 @@ ThemeProvider.propTypes = {
   children: PropTypes.node.isRequired
 };
 
-export const useThemeContext = () => useContext(ThemeContext);
+export default ThemeProvider;

@@ -14,10 +14,11 @@ import Contacts from "../pages/Contacts/index";
 import QuickAnswers from "../pages/QuickAnswers/index";
 import Queues from "../pages/Queues/index";
 import SignupProtection from "../components/SignupProtection";
-import { AuthProvider, AuthContext } from "../context/Auth/AuthContext";
-import { WhatsAppsProvider } from "../context/WhatsApp/WhatsAppsContext";
-import { ThemeProvider } from "../context/DarkMode/index";
-import { I18nProvider } from "../context/I18n/index";
+import { AuthContext } from "../context/Auth/context";
+import AuthProvider from "../context/Auth/AuthContext";
+import WhatsAppsProvider from "../context/WhatsApp/WhatsAppsContext";
+import ThemeProvider from "../context/DarkMode/index";
+import I18nProvider from "../context/I18n/index";
 import Route from "./Route";
 
 const AppRoutes = () => {

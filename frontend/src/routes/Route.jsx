@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Route as RouterRoute, Redirect } from "react-router-dom";
 
-import { AuthContext } from "../context/Auth/AuthContext";
+import { AuthContext } from "../context/Auth/context";
 import BackdropLoading from "../components/BackdropLoading/index";
 
 const Route = ({ component: Component, isPrivate = false, ...rest }) => {

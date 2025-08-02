@@ -16,10 +16,10 @@ import {
   AlertTriangle,
   Globe
 } from "lucide-react";
-import { useThemeContext } from "../context/DarkMode";
-import { AuthContext } from "../context/Auth/AuthContext";
-import { WhatsAppsContext } from "../context/WhatsApp/WhatsAppsContext";
-import { useI18n } from "../context/I18n";
+import { useThemeContext } from "../hooks/useThemeContext";
+import { AuthContext } from "../context/Auth/context";
+import { WhatsAppsContext } from "../context/WhatsApp/context";
+import { useI18n } from "../hooks/useI18n";
 import NotificationsPopOver from "../components/NotificationsPopOver";
 import UserModal from "../components/UserModal";
 import clsx from "clsx";
@@ -365,12 +365,12 @@ export default function MainListItems() {
 
   return (
     <nav className="fixed top-0 left-0 w-full z-30 bg-white dark:bg-[#1e1e1e] border-b border-gray-200 dark:border-gray-700 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-4">
         <div className="flex h-12 items-center justify-between">
           {/* Logo e Links */}
           <div className="flex items-center gap-8">
-            {/* Logo */}
-            <div className="flex items-center">
+            {/* Logo - Escondida no mobile */}
+            <div className="hidden md:flex items-center">
               <span className="font-bold text-xl text-blue-600 dark:text-blue-400 tracking-tight">
                 WhaTicket
               </span>
@@ -383,7 +383,7 @@ export default function MainListItems() {
           </div>
 
           {/* Botões de Ação */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 md:gap-2">
             {/* Connection Alert */}
             {hasDisconnectedConnections && (
               <Can
@@ -508,7 +508,7 @@ export default function MainListItems() {
 
             {/* Mobile menu button */}
             <button
-              className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg bg-gray-100 dark:bg-[#2c2c2c] hover:bg-gray-200 dark:hover:bg-[#3d3d3d] text-gray-600 dark:text-gray-300 transition-colors duration-150 ml-2"
+              className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg bg-gray-100 dark:bg-[#2c2c2c] hover:bg-gray-200 dark:hover:bg-[#3d3d3d] text-gray-600 dark:text-gray-300 transition-colors duration-150"
               onClick={() => {
                 if (isMountedRef.current) {
                   setMobileMenuOpen(v => !v);

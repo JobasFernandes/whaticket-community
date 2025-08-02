@@ -27,7 +27,7 @@ import api from "../../services/api.js";
 import WhatsAppModal from "../../components/WhatsAppModal";
 import QrcodeModal from "../../components/QrcodeModal";
 import ConfirmationModal from "../../components/ConfirmationModal";
-import { WhatsAppsContext } from "../../context/WhatsApp/WhatsAppsContext";
+import { WhatsAppsContext } from "../../context/WhatsApp/context";
 
 const Connections = () => {
   const { whatsApps, loading } = useContext(WhatsAppsContext);
@@ -137,7 +137,7 @@ const Connections = () => {
           <button
             onClick={() => handleOpenQrModal(whatsApp)}
             className="p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
-            title="QR Code"
+            title={i18n.t("connections.tooltips.qrCode")}
           >
             <QrCode className="w-3.5 h-3.5" />
           </button>
@@ -146,7 +146,7 @@ const Connections = () => {
           <button
             onClick={() => handleStartWhatsAppSession(whatsApp.id)}
             className="p-1.5 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/30 rounded transition-colors"
-            title="Iniciar"
+            title={i18n.t("connections.tooltips.start")}
           >
             <Power className="w-3.5 h-3.5" />
           </button>
@@ -159,7 +159,7 @@ const Connections = () => {
               handleOpenConfirmationModal("disconnect", whatsApp.id)
             }
             className="p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
-            title="Desconectar"
+            title={i18n.t("connections.tooltips.disconnect")}
           >
             <WifiOff className="w-3.5 h-3.5" />
           </button>
@@ -168,7 +168,7 @@ const Connections = () => {
           <button
             onClick={() => handleRequestNewQrCode(whatsApp.id)}
             className="p-1.5 text-orange-600 hover:text-orange-800 dark:text-orange-400 dark:hover:text-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded transition-colors"
-            title="Reiniciar"
+            title={i18n.t("connections.tooltips.restart")}
           >
             <QrCode className="w-3.5 h-3.5" />
           </button>
@@ -409,7 +409,7 @@ const Connections = () => {
                         <button
                           onClick={() => handleEditWhatsApp(whatsApp)}
                           className="p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
-                          title={i18n.t("common.edit")}
+                          title={i18n.t("connections.tooltips.edit")}
                         >
                           <Edit className="w-3.5 h-3.5" />
                         </button>
@@ -420,7 +420,7 @@ const Connections = () => {
                             handleOpenConfirmationModal("delete", whatsApp.id)
                           }
                           className="p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
-                          title="Excluir"
+                          title={i18n.t("connections.tooltips.delete")}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

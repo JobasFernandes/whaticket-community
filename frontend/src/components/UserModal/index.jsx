@@ -18,7 +18,7 @@ import { i18n } from "../../translate/i18n.js";
 import api from "../../services/api.js";
 import toastError from "../../errors/toastError.js";
 import QueueSelect from "../QueueSelect";
-import { AuthContext } from "../../context/Auth/AuthContext";
+import { AuthContext } from "../../context/Auth/context";
 import { Can } from "../Can";
 import useWhatsApps from "../../hooks/useWhatsApps";
 

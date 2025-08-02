@@ -18,7 +18,7 @@ import {
 import { i18n } from "../../translate/i18n.js";
 import api from "../../services/api.js";
 import toastError from "../../errors/toastError.js";
-import { useThemeContext } from "../../context/DarkMode";
+import { useThemeContext } from "../../hooks/useThemeContext";
 
 const UserSchema = Yup.object().shape({
   name: Yup.string()

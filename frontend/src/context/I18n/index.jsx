@@ -1,9 +1,8 @@
-import { createContext, useContext, useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { i18n } from "../../translate/i18n";
+import { I18nContext } from "./context";
 
-const I18nContext = createContext();
-
-export const I18nProvider = ({ children }) => {
+const I18nProvider = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language || "pt");
   const [isLoading, setIsLoading] = useState(false);
   const [renderKey, setRenderKey] = useState(0);
@@ -67,10 +66,4 @@ export const I18nProvider = ({ children }) => {
   );
 };
 
-export const useI18n = () => {
-  const context = useContext(I18nContext);
-  if (!context) {
-    throw new Error("useI18n deve ser usado dentro de um I18nProvider");
-  }
-  return context;
-};
+export default I18nProvider;

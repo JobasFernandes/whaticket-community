@@ -3,8 +3,8 @@ import { Link as RouterLink } from "react-router-dom";
 import { Lock, Eye, EyeOff, Mail, Sun, Moon } from "lucide-react";
 
 import { i18n } from "../../translate/i18n.js";
-import { AuthContext } from "../../context/Auth/AuthContext";
-import { useThemeContext } from "../../context/DarkMode";
+import { AuthContext } from "../../context/Auth/context";
+import { useThemeContext } from "../../hooks/useThemeContext";
 import { useSignupStatus } from "../../hooks/useSignupStatus";
 
 const Login = () => {

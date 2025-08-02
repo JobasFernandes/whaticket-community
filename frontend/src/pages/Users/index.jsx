@@ -229,11 +229,11 @@ const Users = () => {
       </MainHeader>
 
       {/* Users Table */}
-      <div
-        className="flex-1 overflow-hidden bg-white dark:bg-[#1e1e1e] border border-gray-200 dark:border-gray-700"
-        onScroll={handleScroll}
-      >
-        <div className="h-full overflow-y-auto custom-scrollbar">
+      <div className="flex-1 overflow-hidden bg-white dark:bg-[#1e1e1e] border border-gray-200 dark:border-gray-700">
+        <div
+          className="h-full overflow-y-auto custom-scrollbar"
+          onScroll={handleScroll}
+        >
           <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-800/50 sticky top-0">
               <tr>

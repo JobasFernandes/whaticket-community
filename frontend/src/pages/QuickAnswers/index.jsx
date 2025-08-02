@@ -275,7 +275,7 @@ const QuickAnswers = () => {
                       <button
                         onClick={() => handleEditQuickAnswers(quickAnswer)}
                         className="p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
-                        title="Editar resposta rápida"
+                        title={i18n.t("quickAnswers.tooltips.editQuickAnswer")}
                       >
                         <Edit className="w-3.5 h-3.5" />
                       </button>
@@ -287,7 +287,9 @@ const QuickAnswers = () => {
                           setDeletingQuickAnswers(quickAnswer);
                         }}
                         className="p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
-                        title="Excluir resposta rápida"
+                        title={i18n.t(
+                          "quickAnswers.tooltips.deleteQuickAnswer"
+                        )}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
