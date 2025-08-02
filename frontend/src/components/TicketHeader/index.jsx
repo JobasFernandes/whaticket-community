@@ -1,26 +1,12 @@
 import React from "react";
-
-import { Card, Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import TicketHeaderSkeleton from "../TicketHeaderSkeleton";
-import ArrowBackIos from "@material-ui/icons/ArrowBackIos";
+import { ArrowLeft } from "lucide-react";
 import { useHistory } from "react-router-dom";
 
-const useStyles = makeStyles(theme => ({
-  ticketHeader: {
-    display: "flex",
-    backgroundColor: theme.palette.background.paper,
-    flex: "none",
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    [theme.breakpoints.down("sm")]: {
-      flexWrap: "wrap"
-    }
-  }
-}));
+import TicketHeaderSkeleton from "../TicketHeaderSkeleton";
 
 const TicketHeader = ({ loading, children }) => {
-  const classes = useStyles();
   const history = useHistory();
+
   const handleBack = () => {
     history.push("/tickets");
   };
@@ -30,12 +16,15 @@ const TicketHeader = ({ loading, children }) => {
       {loading ? (
         <TicketHeaderSkeleton />
       ) : (
-        <Card square className={classes.ticketHeader}>
-          <Button color="primary" onClick={handleBack}>
-            <ArrowBackIos />
-          </Button>
+        <div className="flex items-center bg-white dark:bg-[#1e1e1e] border-b border-gray-200 dark:border-gray-700 px-2 py-3 flex-shrink-0 max-h-[61px]">
+          <button
+            onClick={handleBack}
+            className="inline-flex items-center justify-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mr-1"
+          >
+            <ArrowLeft size={20} className="text-gray-600 dark:text-gray-300" />
+          </button>
           {children}
-        </Card>
+        </div>
       )}
     </>
   );

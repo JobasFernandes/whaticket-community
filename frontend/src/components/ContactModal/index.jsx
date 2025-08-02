@@ -125,7 +125,7 @@ const ContactModal = ({ open, onClose, contactId, initialValues, onSave }) => {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black bg-opacity-75">
       <div className="bg-white dark:bg-[#1e1e1e] rounded-lg shadow-2xl max-w-lg w-full max-h-[85vh] overflow-hidden border border-gray-200 dark:border-gray-700">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">

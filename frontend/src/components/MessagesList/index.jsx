@@ -1,25 +1,16 @@
 import React, { useState, useEffect, useReducer, useRef } from "react";
-
 import { isSameDay, parseISO, format } from "date-fns";
 import openSocket from "../../services/socket-io.js";
 import clsx from "clsx";
-
-import { green } from "@material-ui/core/colors";
 import {
-  Button,
-  CircularProgress,
-  Divider,
-  IconButton,
-  makeStyles
-} from "@material-ui/core";
-import {
-  AccessTime,
-  Block,
-  Done,
-  DoneAll,
-  ExpandMore,
-  GetApp
-} from "@material-ui/icons";
+  Clock,
+  Ban,
+  Check,
+  CheckCheck,
+  ChevronDown,
+  Download,
+  Loader2
+} from "lucide-react";
 
 import MarkdownWrapper from "../MarkdownWrapper";
 import VcardPreview from "../VcardPreview";
@@ -28,252 +19,12 @@ import ModalImageCors from "../ModalImageCors";
 import MessageOptionsMenu from "../MessageOptionsMenu";
 import whatsBackground from "../../assets/wa-background.png";
 import whatsBackgroundDark from "../../assets/wa-background-dark.png";
+import { useThemeContext } from "../../hooks/useThemeContext";
+import { i18n } from "../../translate/i18n.js";
 
 import api from "../../services/api.js";
 import toastError from "../../errors/toastError.js";
 import Audio from "../Audio";
-
-const useStyles = makeStyles(theme => ({
-  messagesListWrapper: {
-    overflow: "hidden",
-    position: "relative",
-    display: "flex",
-    flexDirection: "column",
-    flexGrow: 1
-  },
-
-  messagesList: {
-    backgroundImage:
-      theme.palette.type === "dark"
-        ? `url(${whatsBackgroundDark})`
-        : `url(${whatsBackground})`,
-    backgroundColor: "transparent",
-    display: "flex",
-    flexDirection: "column",
-    flexGrow: 1,
-    padding: "20px 20px 20px 20px",
-    overflowY: "scroll",
-    [theme.breakpoints.down("sm")]: {
-      paddingBottom: "90px"
-    },
-    ...theme.scrollbarStyles
-  },
-
-  circleLoading: {
-    color: green[500],
-    position: "absolute",
-    opacity: "70%",
-    top: 0,
-    left: "50%",
-    marginTop: 12
-  },
-
-  messageLeft: {
-    marginRight: 20,
-    marginTop: 2,
-    minWidth: 100,
-    maxWidth: 600,
-    height: "auto",
-    display: "block",
-    position: "relative",
-    "&:hover #messageActionsButton": {
-      display: "flex",
-      position: "absolute",
-      top: 0,
-      right: 0
-    },
-
-    whiteSpace: "pre-wrap",
-    backgroundColor: theme.palette.type === "dark" ? "#2c2c2c" : "#ffffff",
-    color: theme.palette.text.primary,
-    alignSelf: "flex-start",
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 8,
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius: 8,
-    paddingLeft: 5,
-    paddingRight: 5,
-    paddingTop: 5,
-    paddingBottom: 0,
-    boxShadow:
-      theme.palette.type === "dark"
-        ? "0 1px 1px rgba(255, 255, 255, 0.1)"
-        : "0 1px 1px #b3b3b3"
-  },
-
-  quotedContainerLeft: {
-    margin: "-3px -80px 6px -6px",
-    overflow: "hidden",
-    backgroundColor: theme.palette.type === "dark" ? "#3c3c3c" : "#f0f0f0",
-    borderRadius: "7.5px",
-    display: "flex",
-    position: "relative"
-  },
-
-  quotedMsg: {
-    padding: 10,
-    maxWidth: 300,
-    height: "auto",
-    display: "block",
-    whiteSpace: "pre-wrap",
-    overflow: "hidden"
-  },
-
-  quotedSideColorLeft: {
-    flex: "none",
-    width: "4px",
-    backgroundColor: "#6bcbef"
-  },
-
-  messageRight: {
-    marginLeft: 20,
-    marginTop: 2,
-    minWidth: 100,
-    maxWidth: 600,
-    height: "auto",
-    display: "block",
-    position: "relative",
-    "&:hover #messageActionsButton": {
-      display: "flex",
-      position: "absolute",
-      top: 0,
-      right: 0
-    },
-
-    whiteSpace: "pre-wrap",
-    backgroundColor: theme.palette.type === "dark" ? "#1a472a" : "#dcf8c6",
-    color: theme.palette.text.primary,
-    alignSelf: "flex-end",
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius: 0,
-    paddingLeft: 5,
-    paddingRight: 5,
-    paddingTop: 5,
-    paddingBottom: 0,
-    boxShadow:
-      theme.palette.type === "dark"
-        ? "0 1px 1px rgba(255, 255, 255, 0.1)"
-        : "0 1px 1px #b3b3b3"
-  },
-
-  quotedContainerRight: {
-    margin: "-3px -80px 6px -6px",
-    overflowY: "hidden",
-    backgroundColor: theme.palette.type === "dark" ? "#2a5a3a" : "#cfe9ba",
-    borderRadius: "7.5px",
-    display: "flex",
-    position: "relative"
-  },
-
-  quotedMsgRight: {
-    padding: 10,
-    maxWidth: 300,
-    height: "auto",
-    whiteSpace: "pre-wrap"
-  },
-
-  quotedSideColorRight: {
-    flex: "none",
-    width: "4px",
-    backgroundColor: "#35cd96"
-  },
-
-  messageActionsButton: {
-    display: "none",
-    position: "relative",
-    color: theme.palette.text.secondary,
-    zIndex: 1,
-    backgroundColor: "inherit",
-    opacity: "90%",
-    "&:hover, &.Mui-focusVisible": { backgroundColor: "inherit" }
-  },
-
-  messageContactName: {
-    display: "flex",
-    color: "#6bcbef",
-    fontWeight: 500
-  },
-
-  textContentItem: {
-    overflowWrap: "break-word",
-    padding: "3px 80px 6px 6px"
-  },
-
-  textContentItemDeleted: {
-    fontStyle: "italic",
-    color: theme.palette.text.disabled,
-    overflowWrap: "break-word",
-    padding: "3px 80px 6px 6px"
-  },
-
-  messageMedia: {
-    objectFit: "cover",
-    width: 250,
-    height: 200,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius: 8
-  },
-
-  timestamp: {
-    fontSize: 11,
-    position: "absolute",
-    bottom: 0,
-    right: 5,
-    color: theme.palette.text.secondary
-  },
-
-  dailyTimestamp: {
-    alignItems: "center",
-    textAlign: "center",
-    alignSelf: "center",
-    width: "110px",
-    backgroundColor: theme.palette.type === "dark" ? "#2c2c2c" : "#e1f3fb",
-    margin: "10px",
-    borderRadius: "10px",
-    boxShadow:
-      theme.palette.type === "dark"
-        ? "0 1px 1px rgba(255, 255, 255, 0.1)"
-        : "0 1px 1px #b3b3b3"
-  },
-
-  dailyTimestampText: {
-    color: theme.palette.text.secondary,
-    padding: 8,
-    alignSelf: "center",
-    marginLeft: "0px"
-  },
-
-  ackIcons: {
-    fontSize: 18,
-    verticalAlign: "middle",
-    marginLeft: 4
-  },
-
-  deletedIcon: {
-    fontSize: 18,
-    verticalAlign: "middle",
-    marginRight: 4
-  },
-
-  ackDoneAllIcon: {
-    color: green[500],
-    fontSize: 18,
-    verticalAlign: "middle",
-    marginLeft: 4
-  },
-
-  downloadMedia: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "inherit",
-    padding: 10
-  }
-}));
 
 const reducer = (state, action) => {
   if (action.type === "LOAD_MESSAGES") {
@@ -322,8 +73,7 @@ const reducer = (state, action) => {
 };
 
 const MessagesList = ({ ticketId, isGroup }) => {
-  const classes = useStyles();
-
+  const { darkMode } = useThemeContext();
   const [messagesList, dispatch] = useReducer(reducer, []);
   const [pageNumber, setPageNumber] = useState(1);
   const [hasMore, setHasMore] = useState(false);
@@ -451,8 +201,6 @@ const MessagesList = ({ ticketId, isGroup }) => {
         />
       );
     } else if (message.mediaType === "vcard") {
-      //console.log("vcard")
-      //console.log(message)
       let array = message.body.split("\n");
       let obj = [];
       let contact = "";
@@ -470,23 +218,6 @@ const MessagesList = ({ ticketId, isGroup }) => {
       }
       return <VcardPreview contact={contact} numbers={obj[0]?.number} />;
     } else if (
-      /*else if (message.mediaType === "multi_vcard") {
-      console.log("multi_vcard")
-      console.log(message)
-    	
-      if(message.body !== null && message.body !== "") {
-        let newBody = JSON.parse(message.body)
-        return (
-          <>
-            {
-            newBody.map(v => (
-              <VcardPreview contact={v.name} numbers={v.number} />
-            ))
-            }
-          </>
-        )
-      } else return (<></>)
-    }*/
       /^.*\.(jpe?g|png|gif)?$/i.exec(message.mediaUrl) &&
       message.mediaType === "image"
     ) {
@@ -496,57 +227,59 @@ const MessagesList = ({ ticketId, isGroup }) => {
     } else if (message.mediaType === "video") {
       return (
         <video
-          className={classes.messageMedia}
+          className="object-cover w-64 h-48 rounded-lg"
           src={message.mediaUrl}
           controls
         />
       );
     } else {
       return (
-        <>
-          <div className={classes.downloadMedia}>
-            <Button
-              startIcon={<GetApp />}
-              color="primary"
-              variant="outlined"
-              target="_blank"
-              href={message.mediaUrl}
-            >
-              Download
-            </Button>
-          </div>
-          <Divider />
-        </>
+        <div className="flex flex-col items-center justify-center bg-gray-50 dark:bg-[#121212] p-4 rounded-lg">
+          <a
+            href={message.mediaUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+          >
+            <Download size={16} />
+            Download
+          </a>
+          <div className="w-full h-px bg-gray-200 dark:bg-gray-700 mt-4"></div>
+        </div>
       );
     }
   };
 
   const renderMessageAck = message => {
     if (message.ack === 0) {
-      return <AccessTime fontSize="small" className={classes.ackIcons} />;
+      return (
+        <Clock size={14} className="text-gray-500 dark:text-gray-300 ml-1" />
+      );
     }
     if (message.ack === 1) {
-      return <Done fontSize="small" className={classes.ackIcons} />;
+      return (
+        <Check size={14} className="text-gray-500 dark:text-gray-300 ml-1" />
+      );
     }
     if (message.ack === 2) {
-      return <DoneAll fontSize="small" className={classes.ackIcons} />;
+      return <CheckCheck size={14} className="text-gray-300 ml-1" />;
     }
     if (message.ack === 3 || message.ack === 4) {
-      return <DoneAll fontSize="small" className={classes.ackDoneAllIcon} />;
+      return <CheckCheck size={14} className="text-green-500 ml-1" />;
     }
   };
 
   const renderDailyTimestamps = (message, index) => {
     if (index === 0) {
       return (
-        <span
-          className={classes.dailyTimestamp}
+        <div
+          className="flex justify-center my-4"
           key={`timestamp-${message.id}`}
         >
-          <div className={classes.dailyTimestampText}>
+          <div className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-3 py-1 rounded-full text-xs font-medium">
             {format(parseISO(messagesList[index].createdAt), "dd/MM/yyyy")}
           </div>
-        </span>
+        </div>
       );
     }
     if (index < messagesList.length - 1) {
@@ -555,14 +288,14 @@ const MessagesList = ({ ticketId, isGroup }) => {
 
       if (!isSameDay(messageDay, previousMessageDay)) {
         return (
-          <span
-            className={classes.dailyTimestamp}
+          <div
+            className="flex justify-center my-4"
             key={`timestamp-${message.id}`}
           >
-            <div className={classes.dailyTimestampText}>
+            <div className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-3 py-1 rounded-full text-xs font-medium">
               {format(parseISO(messagesList[index].createdAt), "dd/MM/yyyy")}
             </div>
-          </span>
+          </div>
         );
       }
     }
@@ -571,7 +304,7 @@ const MessagesList = ({ ticketId, isGroup }) => {
         <div
           key={`ref-${message.createdAt}`}
           ref={lastMessageRef}
-          style={{ float: "left", clear: "both" }}
+          className="float-left clear-both"
         />
       );
     }
@@ -583,9 +316,7 @@ const MessagesList = ({ ticketId, isGroup }) => {
       let previousMessageUser = messagesList[index - 1].fromMe;
 
       if (messageUser !== previousMessageUser) {
-        return (
-          <span style={{ marginTop: 16 }} key={`divider-${message.id}`}></span>
-        );
+        return <div className="mt-4" key={`divider-${message.id}`}></div>;
       }
     }
   };
@@ -593,22 +324,24 @@ const MessagesList = ({ ticketId, isGroup }) => {
   const renderQuotedMessage = message => {
     return (
       <div
-        className={clsx(classes.quotedContainerLeft, {
-          [classes.quotedContainerRight]: message.fromMe
-        })}
+        className={clsx(
+          "flex mb-2 p-2 rounded-lg border-l-4 bg-gray-100 dark:bg-[#1e1e1e]",
+          {
+            "border-l-blue-500": !message.fromMe,
+            "border-l-blue-400": message.fromMe,
+            "bg-blue-50/50 dark:bg-blue-900/20": message.fromMe
+          }
+        )}
       >
-        <span
-          className={clsx(classes.quotedSideColorLeft, {
-            [classes.quotedSideColorRight]: message.quotedMsg?.fromMe
-          })}
-        ></span>
-        <div className={classes.quotedMsg}>
+        <div className="flex-1 overflow-hidden">
           {!message.quotedMsg?.fromMe && (
-            <span className={classes.messageContactName}>
+            <div className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-1">
               {message.quotedMsg?.contact?.name}
-            </span>
+            </div>
           )}
-          {message.quotedMsg?.body}
+          <div className="text-sm text-gray-700 dark:text-gray-300 break-words">
+            {message.quotedMsg?.body}
+          </div>
         </div>
       </div>
     );
@@ -618,80 +351,176 @@ const MessagesList = ({ ticketId, isGroup }) => {
     if (messagesList.length > 0) {
       const viewMessagesList = messagesList.map((message, index) => {
         if (!message.fromMe) {
+          // Message from contact
           return (
             <React.Fragment key={message.id}>
               {renderDailyTimestamps(message, index)}
               {renderMessageDivider(message, index)}
-              <div className={classes.messageLeft}>
-                <IconButton
-                  variant="contained"
-                  size="small"
-                  id="messageActionsButton"
-                  disabled={message.isDeleted}
-                  className={classes.messageActionsButton}
-                  onClick={e => handleOpenMessageOptionsMenu(e, message)}
+              <div className="flex justify-start mb-2 group">
+                <div
+                  className={clsx(
+                    "relative max-w-xs lg:max-w-md backdrop-blur-sm rounded-2xl rounded-tl-none shadow-lg p-3",
+                    {
+                      "bg-red-50/95 dark:bg-red-900/20 border border-red-200/50 dark:border-red-800/50":
+                        message.isDeleted,
+                      "bg-white/95 dark:bg-[#1e1e1e]/95 border border-gray-200/50 dark:border-gray-700/50":
+                        !message.isDeleted
+                    }
+                  )}
                 >
-                  <ExpandMore />
-                </IconButton>
-                {isGroup && (
-                  <span className={classes.messageContactName}>
-                    {message.contact?.name}
-                  </span>
-                )}
-                {(message.mediaUrl ||
-                  message.mediaType === "location" ||
-                  message.mediaType === "vcard") &&
-                  //|| message.mediaType === "multi_vcard"
-                  checkMessageMedia(message)}
-                <div className={classes.textContentItem}>
-                  {message.quotedMsg && renderQuotedMessage(message)}
-                  <MarkdownWrapper>{message.body}</MarkdownWrapper>
-                  <span className={classes.timestamp}>
-                    {format(parseISO(message.createdAt), "HH:mm")}
-                  </span>
+                  {/* Message Actions Button */}
+                  <button
+                    disabled={message.isDeleted}
+                    onClick={e => handleOpenMessageOptionsMenu(e, message)}
+                    className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full"
+                  >
+                    <ChevronDown
+                      size={14}
+                      className="text-gray-500 dark:text-gray-300"
+                    />
+                  </button>
+
+                  {/* Group Contact Name */}
+                  {isGroup && (
+                    <div className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-1">
+                      {message.contact?.name}
+                    </div>
+                  )}
+
+                  {/* Media Content */}
+                  {(message.mediaUrl ||
+                    message.mediaType === "location" ||
+                    message.mediaType === "vcard") &&
+                    checkMessageMedia(message)}
+
+                  {/* Text Content */}
+                  <div className="break-words">
+                    {message.quotedMsg && renderQuotedMessage(message)}
+                    {/* Show body text unless it's just a media filename */}
+                    {message.body &&
+                      !(
+                        message.mediaUrl &&
+                        message.body.match(
+                          /^[A-Za-z0-9]+\-\d+\.(jpg|jpeg|png|gif|mp4|mp3|wav|ogg|pdf|doc|docx)$/i
+                        )
+                      ) && (
+                        <div
+                          className={clsx("text-sm", {
+                            "text-red-700 dark:text-red-300 italic":
+                              message.isDeleted,
+                            "text-gray-900 dark:text-white": !message.isDeleted
+                          })}
+                        >
+                          <MarkdownWrapper>{message.body}</MarkdownWrapper>
+                        </div>
+                      )}
+
+                    {/* Timestamp */}
+                    <div className="flex items-center justify-end mt-1 gap-1">
+                      {message.isDeleted && (
+                        <div className="flex items-center mr-2">
+                          <Ban
+                            size={12}
+                            className="inline-block mr-1 text-red-500 dark:text-red-400"
+                          />
+                          <span className="text-xs italic text-red-600 dark:text-red-400">
+                            {i18n.t("messagesList.deletedMessage")}
+                          </span>
+                        </div>
+                      )}
+                      <span className="text-xs text-gray-500 dark:text-gray-300">
+                        {format(parseISO(message.createdAt), "HH:mm")}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </React.Fragment>
           );
         } else {
+          // Message from me
           return (
             <React.Fragment key={message.id}>
               {renderDailyTimestamps(message, index)}
               {renderMessageDivider(message, index)}
-              <div className={classes.messageRight}>
-                <IconButton
-                  variant="contained"
-                  size="small"
-                  id="messageActionsButton"
-                  disabled={message.isDeleted}
-                  className={classes.messageActionsButton}
-                  onClick={e => handleOpenMessageOptionsMenu(e, message)}
-                >
-                  <ExpandMore />
-                </IconButton>
-                {(message.mediaUrl ||
-                  message.mediaType === "location" ||
-                  message.mediaType === "vcard") &&
-                  //|| message.mediaType === "multi_vcard"
-                  checkMessageMedia(message)}
+              <div className="flex justify-end mb-2 group">
                 <div
-                  className={clsx(classes.textContentItem, {
-                    [classes.textContentItemDeleted]: message.isDeleted
-                  })}
-                >
-                  {message.isDeleted && (
-                    <Block
-                      color="disabled"
-                      fontSize="small"
-                      className={classes.deletedIcon}
-                    />
+                  className={clsx(
+                    "relative max-w-xs lg:max-w-md backdrop-blur-sm rounded-2xl rounded-tr-none shadow-lg p-3",
+                    {
+                      "bg-red-100/90 dark:bg-red-900/30 border border-red-300/50 dark:border-red-800/50":
+                        message.isDeleted,
+                      "bg-blue-600/90 dark:bg-blue-700/60 border border-blue-500/20 dark:border-blue-600/20":
+                        !message.isDeleted
+                    }
                   )}
-                  {message.quotedMsg && renderQuotedMessage(message)}
-                  <MarkdownWrapper>{message.body}</MarkdownWrapper>
-                  <span className={classes.timestamp}>
-                    {format(parseISO(message.createdAt), "HH:mm")}
-                    {renderMessageAck(message)}
-                  </span>
+                >
+                  {/* Message Actions Button */}
+                  <button
+                    disabled={message.isDeleted}
+                    onClick={e => handleOpenMessageOptionsMenu(e, message)}
+                    className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-blue-700/50 dark:hover:bg-blue-800/50 rounded-full"
+                  >
+                    <ChevronDown size={14} className="text-blue-100" />
+                  </button>
+
+                  {/* Media Content */}
+                  {(message.mediaUrl ||
+                    message.mediaType === "location" ||
+                    message.mediaType === "vcard") &&
+                    checkMessageMedia(message)}
+
+                  {/* Text Content */}
+                  <div
+                    className={clsx("break-words", {
+                      italic: message.isDeleted
+                    })}
+                  >
+                    {message.quotedMsg && renderQuotedMessage(message)}
+                    {/* Show body text unless it's just a media filename */}
+                    {message.body &&
+                      !(
+                        message.mediaUrl &&
+                        message.body.match(
+                          /^[A-Za-z0-9]+\-\d+\.(jpg|jpeg|png|gif|mp4|mp3|wav|ogg|pdf|doc|docx)$/i
+                        )
+                      ) && (
+                        <div
+                          className={clsx("text-sm", {
+                            "text-red-700 dark:text-red-200": message.isDeleted,
+                            "text-white": !message.isDeleted
+                          })}
+                        >
+                          <MarkdownWrapper>{message.body}</MarkdownWrapper>
+                        </div>
+                      )}
+
+                    {/* Timestamp and Status */}
+                    <div className="flex items-center justify-between mt-1">
+                      {message.isDeleted && (
+                        <div className="flex items-center">
+                          <Ban
+                            size={12}
+                            className="inline-block mr-1 text-red-600 dark:text-red-400"
+                          />
+                          <span className="text-xs italic text-red-700 dark:text-red-300">
+                            {i18n.t("messagesList.deletedMessage")}
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-1 ml-auto">
+                        <span
+                          className={clsx("text-xs", {
+                            "text-red-600 dark:text-red-300": message.isDeleted,
+                            "text-blue-100": !message.isDeleted
+                          })}
+                        >
+                          {format(parseISO(message.createdAt), "HH:mm")}
+                        </span>
+                        {renderMessageAck(message)}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </React.Fragment>
@@ -700,12 +529,16 @@ const MessagesList = ({ ticketId, isGroup }) => {
       });
       return viewMessagesList;
     } else {
-      return <div>Say hello to your new contact!</div>;
+      return (
+        <div className="flex items-center justify-center h-32 text-gray-500 dark:text-gray-300">
+          Say hello to your new contact!
+        </div>
+      );
     }
   };
 
   return (
-    <div className={classes.messagesListWrapper}>
+    <div className="overflow-hidden relative flex flex-col flex-grow">
       <MessageOptionsMenu
         message={selectedMessage}
         anchorEl={anchorEl}
@@ -714,14 +547,21 @@ const MessagesList = ({ ticketId, isGroup }) => {
       />
       <div
         id="messagesList"
-        className={classes.messagesList}
+        className="bg-gray-50 dark:bg-[#121212] flex flex-col flex-grow p-5 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 pb-20 sm:pb-5"
+        style={{
+          backgroundImage: `url(${darkMode ? whatsBackgroundDark : whatsBackground})`,
+          backgroundRepeat: "repeat"
+        }}
         onScroll={handleScroll}
       >
         {messagesList.length > 0 ? renderMessages() : []}
       </div>
       {loading && (
-        <div>
-          <CircularProgress className={classes.circleLoading} />
+        <div className="absolute top-3 left-1/2 transform -translate-x-1/2">
+          <Loader2
+            size={24}
+            className="animate-spin text-blue-600 opacity-70"
+          />
         </div>
       )}
     </div>

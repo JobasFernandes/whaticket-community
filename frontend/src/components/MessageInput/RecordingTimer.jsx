@@ -1,17 +1,6 @@
 import { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles(theme => ({
-  timerBox: {
-    display: "flex",
-    marginLeft: 10,
-    marginRight: 10,
-    alignItems: "center"
-  }
-}));
 
 const RecordingTimer = () => {
-  const classes = useStyles();
   const initialState = {
     minutes: 0,
     seconds: 0
@@ -39,8 +28,10 @@ const RecordingTimer = () => {
   };
 
   return (
-    <div className={classes.timerBox}>
-      <span>{`${addZero(timer.minutes)}:${addZero(timer.seconds)}`}</span>
+    <div className="flex items-center mx-3">
+      <span className="text-sm text-gray-600 dark:text-gray-400 font-mono">
+        {`${addZero(timer.minutes)}:${addZero(timer.seconds)}`}
+      </span>
     </div>
   );
 };

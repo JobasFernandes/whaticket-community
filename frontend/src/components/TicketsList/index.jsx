@@ -1,75 +1,12 @@
 import { useState, useEffect, useReducer, useContext } from "react";
 import openSocket from "../../services/socket-io.js";
 
-import { makeStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import Paper from "@material-ui/core/Paper";
-
 import TicketListItem from "../TicketListItem";
 import TicketsListSkeleton from "../TicketsListSkeleton";
 
 import useTickets from "../../hooks/useTickets";
 import { i18n } from "../../translate/i18n.js";
-import { AuthContext } from "../../context/Auth/AuthContext";
-
-const useStyles = makeStyles(theme => ({
-  ticketsListWrapper: {
-    position: "relative",
-    display: "flex",
-    height: "100%",
-    flexDirection: "column",
-    overflow: "hidden",
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0
-  },
-
-  ticketsList: {
-    flex: 1,
-    overflowY: "scroll",
-    ...theme.scrollbarStyles,
-    borderTop: "2px solid rgba(0, 0, 0, 0.12)"
-  },
-
-  ticketsListHeader: {
-    color: "rgb(67, 83, 105)",
-    zIndex: 2,
-    backgroundColor: "white",
-    borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-
-  ticketsCount: {
-    fontWeight: "normal",
-    color: "rgb(104, 121, 146)",
-    marginLeft: "8px",
-    fontSize: "14px"
-  },
-
-  noTicketsText: {
-    textAlign: "center",
-    color: "rgb(104, 121, 146)",
-    fontSize: "14px",
-    lineHeight: "1.4"
-  },
-
-  noTicketsTitle: {
-    textAlign: "center",
-    fontSize: "16px",
-    fontWeight: "600",
-    margin: "0px"
-  },
-
-  noTicketsDiv: {
-    display: "flex",
-    height: "100px",
-    margin: 40,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
-  }
-}));
+import { AuthContext } from "../../context/Auth/context";
 
 const reducer = (state, action) => {
   if (action.type === "LOAD_TICKETS") {
@@ -155,7 +92,6 @@ const reducer = (state, action) => {
 const TicketsList = props => {
   const { status, searchParam, showAll, selectedQueueIds, updateCount, style } =
     props;
-  const classes = useStyles();
   const [pageNumber, setPageNumber] = useState(1);
   const [ticketsList, dispatch] = useReducer(reducer, []);
   const { user, loading: authLoading } = useContext(AuthContext);
@@ -279,21 +215,22 @@ const TicketsList = props => {
   };
 
   return (
-    <Paper className={classes.ticketsListWrapper} style={style}>
-      <Paper
-        square
+    <div
+      className="bg-white dark:bg-[#1e1e1e] rounded-l-lg shadow-sm h-full flex flex-col"
+      style={style}
+    >
+      <div
         name="closed"
-        elevation={0}
-        className={classes.ticketsList}
+        className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500"
         onScroll={handleScroll}
       >
-        <List style={{ paddingTop: 0 }}>
+        <div className="pt-0">
           {ticketsList.length === 0 && !loading ? (
-            <div className={classes.noTicketsDiv}>
-              <span className={classes.noTicketsTitle}>
+            <div className="flex flex-col items-center justify-center p-8 text-center h-64">
+              <span className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
                 {i18n.t("ticketsList.noTicketsTitle")}
               </span>
-              <p className={classes.noTicketsText}>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 {i18n.t("ticketsList.noTicketsMessage")}
               </p>
             </div>
@@ -305,9 +242,9 @@ const TicketsList = props => {
             </>
           )}
           {loading && <TicketsListSkeleton />}
-        </List>
-      </Paper>
-    </Paper>
+        </div>
+      </div>
+    </div>
   );
 };
 

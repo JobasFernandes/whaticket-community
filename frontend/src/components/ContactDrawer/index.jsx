@@ -1,15 +1,5 @@
 import { useState } from "react";
-
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-import Drawer from "@material-ui/core/Drawer";
-import Link from "@material-ui/core/Link";
-import InputLabel from "@material-ui/core/InputLabel";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
+import { X, User, Edit3 } from "lucide-react";
 
 import { i18n } from "../../translate/i18n.js";
 
@@ -17,149 +7,119 @@ import ContactModal from "../ContactModal";
 import ContactDrawerSkeleton from "../ContactDrawerSkeleton";
 import MarkdownWrapper from "../MarkdownWrapper";
 
-const drawerWidth = 320;
-
-const useStyles = makeStyles(theme => ({
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0
-  },
-  drawerPaper: {
-    width: drawerWidth,
-    display: "flex",
-    borderTop: `1px solid ${theme.palette.divider}`,
-    borderRight: `1px solid ${theme.palette.divider}`,
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    borderTopRightRadius: 4,
-    borderBottomRightRadius: 4,
-    backgroundColor: theme.palette.background.paper
-  },
-  header: {
-    display: "flex",
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    backgroundColor: theme.palette.background.paper,
-    alignItems: "center",
-    padding: theme.spacing(0, 1),
-    minHeight: "73px",
-    justifyContent: "flex-start"
-  },
-  content: {
-    display: "flex",
-    backgroundColor: theme.palette.background.default,
-    flexDirection: "column",
-    padding: "8px 0px 8px 8px",
-    height: "100%",
-    overflowY: "scroll",
-    ...theme.scrollbarStyles
-  },
-
-  contactAvatar: {
-    margin: 15,
-    width: 160,
-    height: 160
-  },
-
-  contactHeader: {
-    display: "flex",
-    padding: 8,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    "& > *": {
-      margin: 4
-    }
-  },
-
-  contactDetails: {
-    marginTop: 8,
-    padding: 8,
-    display: "flex",
-    flexDirection: "column"
-  },
-  contactExtraInfo: {
-    marginTop: 4,
-    padding: 6
-  }
-}));
-
 const ContactDrawer = ({ open, handleDrawerClose, contact, loading }) => {
-  const classes = useStyles();
-
   const [modalOpen, setModalOpen] = useState(false);
 
-  return (
-    <Drawer
-      className={classes.drawer}
-      variant="persistent"
-      anchor="right"
-      open={open}
-      PaperProps={{ style: { position: "absolute" } }}
-      BackdropProps={{ style: { position: "absolute" } }}
-      ModalProps={{
-        container: document.getElementById("drawer-container"),
-        style: { position: "absolute" }
-      }}
-      classes={{
-        paper: classes.drawerPaper
-      }}
-    >
-      <div className={classes.header}>
-        <IconButton onClick={handleDrawerClose}>
-          <CloseIcon />
-        </IconButton>
-        <Typography style={{ justifySelf: "center" }}>
-          {i18n.t("contactDrawer.header")}
-        </Typography>
-      </div>
-      {loading ? (
-        <ContactDrawerSkeleton classes={classes} />
-      ) : (
-        <div className={classes.content}>
-          <Paper square variant="outlined" className={classes.contactHeader}>
-            <Avatar
-              alt={contact.name}
-              src={contact.profilePicUrl}
-              className={classes.contactAvatar}
-            ></Avatar>
+  if (!open) return null;
 
-            <Typography>{contact.name}</Typography>
-            <Typography>
-              <Link href={`tel:${contact.number}`}>{contact.number}</Link>
-            </Typography>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() => setModalOpen(true)}
-            >
-              {i18n.t("contactDrawer.buttons.edit")}
-            </Button>
-          </Paper>
-          <Paper square variant="outlined" className={classes.contactDetails}>
-            <ContactModal
-              open={modalOpen}
-              onClose={() => setModalOpen(false)}
-              contactId={contact.id}
-            ></ContactModal>
-            <Typography variant="subtitle1">
-              {i18n.t("contactDrawer.extraInfo")}
-            </Typography>
-            {contact?.extraInfo?.map(info => (
-              <Paper
-                key={info.id}
-                square
-                variant="outlined"
-                className={classes.contactExtraInfo}
-              >
-                <InputLabel>{info.name}</InputLabel>
-                <Typography component="div" noWrap style={{ paddingTop: 2 }}>
-                  <MarkdownWrapper>{info.value}</MarkdownWrapper>
-                </Typography>
-              </Paper>
-            ))}
-          </Paper>
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        className="fixed inset-0 bg-black bg-opacity-0 z-40"
+        onClick={handleDrawerClose}
+      />
+
+      {/* Drawer */}
+      <div className="fixed top-0 right-0 h-full w-80 bg-white dark:bg-[#1e1e1e] shadow-lg border-l border-gray-200 dark:border-gray-700 z-50 transform transition-transform duration-300 ease-in-out">
+        {/* Header */}
+        <div className="flex items-center min-h-[49px] justify-between p-1 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1e1e1e]">
+          <button
+            onClick={handleDrawerClose}
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            <X size={20} className="text-gray-600 dark:text-gray-300" />
+          </button>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+            {i18n.t("contactDrawer.header")}
+          </h2>
+          <div className="w-10" /> {/* Spacer for centering */}
         </div>
-      )}
-    </Drawer>
+
+        {loading ? (
+          <ContactDrawerSkeleton />
+        ) : (
+          <div className="flex flex-col h-full overflow-y-auto bg-gray-50 dark:bg-[#121212]">
+            {/* Contact Info Card */}
+            <div className="bg-white dark:bg-[#1e1e1e] m-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+              <div className="flex flex-col items-center p-6 space-y-4">
+                {/* Avatar */}
+                <div className="relative">
+                  {contact.profilePicUrl ? (
+                    <img
+                      src={contact.profilePicUrl}
+                      alt={contact.name}
+                      className="w-40 h-40 rounded-full object-cover ring-4 ring-gray-100 dark:ring-gray-700"
+                    />
+                  ) : (
+                    <div className="w-40 h-40 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center ring-4 ring-gray-100 dark:ring-gray-700">
+                      <User
+                        size={60}
+                        className="text-gray-400 dark:text-gray-500"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Contact Details */}
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    {contact.name}
+                  </h3>
+                  <a
+                    href={`tel:${contact.number}`}
+                    className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors font-medium"
+                  >
+                    {contact.number}
+                  </a>
+                </div>
+
+                {/* Edit Button */}
+                <button
+                  onClick={() => setModalOpen(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
+                >
+                  <Edit3 size={16} />
+                  {i18n.t("contactDrawer.buttons.edit")}
+                </button>
+              </div>
+            </div>
+
+            {/* Extra Info Section */}
+            <div className="bg-white dark:bg-[#1e1e1e] m-4 mt-0 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+              <div className="p-4">
+                <h4 className="text-sm font-medium text-gray-900 dark:text-white uppercase tracking-wide mb-4">
+                  {i18n.t("contactDrawer.extraInfo")}
+                </h4>
+
+                <div className="space-y-3">
+                  {contact?.extraInfo?.map(info => (
+                    <div
+                      key={info.id}
+                      className="bg-gray-50 dark:bg-[#121212] rounded-lg p-3 border border-gray-200 dark:border-gray-700"
+                    >
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wide mb-1">
+                        {info.name}
+                      </label>
+                      <div className="text-sm text-gray-900 dark:text-white break-words">
+                        <MarkdownWrapper>{info.value}</MarkdownWrapper>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Contact Modal */}
+        <ContactModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          contactId={contact.id}
+        />
+      </div>
+    </>
   );
 };
 

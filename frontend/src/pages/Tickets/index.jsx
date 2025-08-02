@@ -1,104 +1,46 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
+import { MessageSquare } from "lucide-react";
 
 import TicketsManager from "../../components/TicketsManager/";
 import Ticket from "../../components/Ticket/";
 
 import { i18n } from "../../translate/i18n.js";
-import Hidden from "@material-ui/core/Hidden";
-
-const useStyles = makeStyles(theme => ({
-  chatContainer: {
-    flex: 1,
-    // // backgroundColor: "#eee",
-    // padding: theme.spacing(4),
-    height: `calc(100% - 48px)`,
-    overflowY: "hidden",
-    backgroundColor: theme.palette.background.default
-  },
-
-  chatPapper: {
-    // backgroundColor: "red",
-    display: "flex",
-    height: "100%",
-    backgroundColor: theme.palette.background.paper
-  },
-
-  contactsWrapper: {
-    display: "flex",
-    height: "100%",
-    flexDirection: "column",
-    overflowY: "hidden"
-  },
-  contactsWrapperSmall: {
-    display: "flex",
-    height: "100%",
-    flexDirection: "column",
-    overflowY: "hidden",
-    [theme.breakpoints.down("sm")]: {
-      display: "none"
-    }
-  },
-  messagessWrapper: {
-    display: "flex",
-    height: "100%",
-    flexDirection: "column"
-  },
-  welcomeMsg: {
-    backgroundColor: theme.palette.background.paper,
-    display: "flex",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    height: "100%",
-    textAlign: "center",
-    borderRadius: 0
-  },
-  ticketsManager: {},
-  ticketsManagerClosed: {
-    [theme.breakpoints.down("sm")]: {
-      display: "none"
-    }
-  }
-}));
 
 const Chat = () => {
-  const classes = useStyles();
   const { ticketId } = useParams();
 
   return (
-    <div className={classes.chatContainer}>
-      <div className={classes.chatPapper}>
-        <Grid container spacing={0}>
-          {/* <Grid item xs={4} className={classes.contactsWrapper}> */}
-          <Grid
-            item
-            xs={12}
-            md={4}
-            className={
-              ticketId ? classes.contactsWrapperSmall : classes.contactsWrapper
-            }
-          >
-            <TicketsManager />
-          </Grid>
-          <Grid item xs={12} md={8} className={classes.messagessWrapper}>
-            {/* <Grid item xs={8} className={classes.messagessWrapper}> */}
-            {ticketId ? (
-              <>
-                <Ticket />
-              </>
-            ) : (
-              <Hidden only={["sm", "xs"]}>
-                <Paper className={classes.welcomeMsg}>
-                  {/* <Paper square variant="outlined" className={classes.welcomeMsg}> */}
-                  <span>{i18n.t("chat.noTicketMessage")}</span>
-                </Paper>
-              </Hidden>
-            )}
-          </Grid>
-        </Grid>
+    <div className="flex-1 h-[calc(100vh-3rem)] overflow-hidden rounded-lg bg-gray-50 dark:bg-[#121212] pb-2">
+      <div className="flex h-full rounded-lg bg-white dark:bg-[#1e1e1e]">
+        {/* Left Sidebar - Tickets Manager */}
+        <div
+          className={`flex flex-col h-full overflow-hidden ${
+            ticketId
+              ? "hidden md:flex md:w-[38%] lg:w-[35%] xl:w-[30%]"
+              : "w-full md:w-[38%] lg:w-[35%] xl:w-[30%]"
+          }`}
+        >
+          <TicketsManager />
+        </div>
+
+        {/* Right Content - Ticket View */}
+        <div className="flex flex-col h-full flex-1 overflow-hidden border-l-0 border-r-0 md:border-r border-b border-t border-gray-200 dark:border-gray-700 rounded-bl-lg md:rounded-bl-none rounded-r-lg">
+          {ticketId ? (
+            <Ticket />
+          ) : (
+            <div className="hidden md:flex items-center justify-center h-full bg-white dark:bg-[#1e1e1e]">
+              <div className="text-center p-8">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                  <MessageSquare className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="text-lg text-gray-600 dark:text-gray-400">
+                  {i18n.t("chat.noTicketMessage")}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

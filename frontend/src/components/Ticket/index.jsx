@@ -5,8 +5,6 @@ import { toast } from "react-toastify";
 import openSocket from "../../services/socket-io.js";
 import clsx from "clsx";
 
-import { Paper, makeStyles } from "@material-ui/core";
-
 import ContactDrawer from "../ContactDrawer";
 import MessageInput from "../MessageInput/";
 import TicketHeader from "../TicketHeader";
@@ -14,69 +12,12 @@ import TicketInfo from "../TicketInfo";
 import TicketActionButtons from "../TicketActionButtons";
 import MessagesList from "../MessagesList";
 import api from "../../services/api.js";
-import { ReplyMessageProvider } from "../../context/ReplyingMessage/ReplyingMessageContext";
+import ReplyMessageProvider from "../../context/ReplyingMessage/ReplyingMessageContext";
 import toastError from "../../errors/toastError.js";
-
-const drawerWidth = 320;
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: "flex",
-    height: "100%",
-    position: "relative",
-    overflow: "hidden"
-  },
-
-  ticketInfo: {
-    maxWidth: "50%",
-    flexBasis: "50%",
-    [theme.breakpoints.down("sm")]: {
-      maxWidth: "80%",
-      flexBasis: "80%"
-    }
-  },
-  ticketActionButtons: {
-    maxWidth: "50%",
-    flexBasis: "50%",
-    display: "flex",
-    [theme.breakpoints.down("sm")]: {
-      maxWidth: "100%",
-      flexBasis: "100%",
-      marginBottom: "5px"
-    }
-  },
-
-  mainWrapper: {
-    flex: 1,
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    overflow: "hidden",
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-    borderLeft: "0",
-    marginRight: -drawerWidth,
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
-  },
-
-  mainWrapperShift: {
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginRight: 0
-  }
-}));
 
 const Ticket = () => {
   const { ticketId } = useParams();
   const history = useHistory();
-  const classes = useStyles();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -144,34 +85,29 @@ const Ticket = () => {
   };
 
   return (
-    <div className={classes.root} id="drawer-container">
-      <Paper
-        variant="outlined"
-        elevation={0}
-        className={clsx(classes.mainWrapper, {
-          [classes.mainWrapperShift]: drawerOpen
-        })}
-      >
+    <div className="flex h-full relative overflow-hidden">
+      {/* Main Content */}
+      <div className="flex-1 h-full flex flex-col overflow-hidden bg-white dark:bg-[#1e1e1e] rounded-lg sm:rounded-r-lg sm:rounded-l-none">
         <TicketHeader loading={loading}>
-          <div className={classes.ticketInfo}>
+          <div className="flex-1 max-w-[50%] sm:max-w-[80%]">
             <TicketInfo
               contact={contact}
               ticket={ticket}
               onClick={handleDrawerOpen}
             />
           </div>
-          <div className={classes.ticketActionButtons}>
+          <div className="flex-1 max-w-[50%] sm:max-w-full flex sm:mb-1">
             <TicketActionButtons ticket={ticket} />
           </div>
         </TicketHeader>
+
         <ReplyMessageProvider>
-          <MessagesList
-            ticketId={ticketId}
-            isGroup={ticket.isGroup}
-          ></MessagesList>
+          <MessagesList ticketId={ticketId} isGroup={ticket.isGroup} />
           <MessageInput ticketStatus={ticket.status} />
         </ReplyMessageProvider>
-      </Paper>
+      </div>
+
+      {/* Contact Drawer */}
       <ContactDrawer
         open={drawerOpen}
         handleDrawerClose={handleDrawerClose}

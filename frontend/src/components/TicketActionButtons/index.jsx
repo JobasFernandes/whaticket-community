@@ -1,31 +1,14 @@
 import { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
-
-import { makeStyles } from "@material-ui/core/styles";
-import { IconButton } from "@material-ui/core";
-import { MoreVert, Replay } from "@material-ui/icons";
+import { RotateCcw, MoreVertical, Loader2, Check } from "lucide-react";
 
 import { i18n } from "../../translate/i18n.js";
 import api from "../../services/api.js";
 import TicketOptionsMenu from "../TicketOptionsMenu";
-import ButtonWithSpinner from "../ButtonWithSpinner";
 import toastError from "../../errors/toastError.js";
-import { AuthContext } from "../../context/Auth/AuthContext";
-
-const useStyles = makeStyles(theme => ({
-  actionButtons: {
-    marginRight: 6,
-    flex: "none",
-    alignSelf: "center",
-    marginLeft: "auto",
-    "& > *": {
-      margin: theme.spacing(1)
-    }
-  }
-}));
+import { AuthContext } from "../../context/Auth/context";
 
 const TicketActionButtons = ({ ticket }) => {
-  const classes = useStyles();
   const history = useHistory();
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -61,39 +44,66 @@ const TicketActionButtons = ({ ticket }) => {
   };
 
   return (
-    <div className={classes.actionButtons}>
+    <div className="flex items-center gap-2 ml-auto">
       {ticket.status === "closed" && (
-        <ButtonWithSpinner
-          loading={loading}
-          startIcon={<Replay />}
-          size="small"
+        <button
+          disabled={loading}
           onClick={e => handleUpdateTicketStatus(e, "open", user?.id)}
+          className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white text-sm font-medium rounded-lg transition-colors"
         >
-          {i18n.t("messagesList.header.buttons.reopen")}
-        </ButtonWithSpinner>
+          {loading ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : (
+            <RotateCcw size={16} />
+          )}
+          <span className="hidden sm:inline">
+            {i18n.t("messagesList.header.buttons.reopen")}
+          </span>
+        </button>
       )}
+
       {ticket.status === "open" && (
         <>
-          <ButtonWithSpinner
-            loading={loading}
-            startIcon={<Replay />}
-            size="small"
+          <button
+            disabled={loading}
             onClick={e => handleUpdateTicketStatus(e, "pending", null)}
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-400 text-white text-sm font-medium rounded-lg transition-colors"
           >
-            {i18n.t("messagesList.header.buttons.return")}
-          </ButtonWithSpinner>
-          <ButtonWithSpinner
-            loading={loading}
-            size="small"
-            variant="contained"
-            color="primary"
+            {loading ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <RotateCcw size={16} />
+            )}
+            <span className="hidden sm:inline">
+              {i18n.t("messagesList.header.buttons.return")}
+            </span>
+          </button>
+
+          <button
+            disabled={loading}
             onClick={e => handleUpdateTicketStatus(e, "closed", user?.id)}
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white text-sm font-medium rounded-lg transition-colors"
           >
-            {i18n.t("messagesList.header.buttons.resolve")}
-          </ButtonWithSpinner>
-          <IconButton onClick={handleOpenTicketOptionsMenu}>
-            <MoreVert />
-          </IconButton>
+            {loading ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <Check size={16} />
+            )}
+            <span className="hidden sm:inline">
+              {i18n.t("messagesList.header.buttons.resolve")}
+            </span>
+          </button>
+
+          <button
+            onClick={handleOpenTicketOptionsMenu}
+            className="inline-flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            <MoreVertical
+              size={16}
+              className="text-gray-600 dark:text-gray-300"
+            />
+          </button>
+
           <TicketOptionsMenu
             ticket={ticket}
             anchorEl={anchorEl}
@@ -102,16 +112,22 @@ const TicketActionButtons = ({ ticket }) => {
           />
         </>
       )}
+
       {ticket.status === "pending" && (
-        <ButtonWithSpinner
-          loading={loading}
-          size="small"
-          variant="contained"
-          color="primary"
+        <button
+          disabled={loading}
           onClick={e => handleUpdateTicketStatus(e, "open", user?.id)}
+          className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white text-sm font-medium rounded-lg transition-colors"
         >
-          {i18n.t("messagesList.header.buttons.accept")}
-        </ButtonWithSpinner>
+          {loading ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : (
+            <Check size={16} />
+          )}
+          <span className="hidden sm:inline">
+            {i18n.t("messagesList.header.buttons.accept")}
+          </span>
+        </button>
       )}
     </div>
   );
