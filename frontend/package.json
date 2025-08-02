@@ -15,6 +15,8 @@
     "format:fix": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "dependencies": {
+    "@emoji-mart/data": "^1.2.1",
+    "@emoji-mart/react": "^1.1.1",
     "@material-ui/core": "4.12.4",
     "@material-ui/icons": "4.11.3",
     "@material-ui/lab": "4.0.0-alpha.61",
@@ -22,7 +24,7 @@
     "axios": "^1.7.7",
     "date-fns": "^2.30.0",
     "dotenv": "^16.4.5",
-    "emoji-mart": "^3.0.1",
+    "emoji-mart": "^5.6.0",
     "express": "^4.18.2",
     "formik": "^2.4.0",
     "i18next": "^23.11.0",
