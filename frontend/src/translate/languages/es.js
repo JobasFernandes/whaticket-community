@@ -108,6 +108,14 @@ const messages = {
           newQr: "Nuevo QR CODE",
           connecting: "Conectando"
         },
+        tooltips: {
+          qrCode: "Código QR",
+          start: "Iniciar",
+          disconnect: "Desconectar",
+          restart: "Reiniciar",
+          edit: "Editar",
+          delete: "Eliminar"
+        },
         toolTips: {
           disconnected: {
             title: "No se pudo iniciar la sesión de WhatsApp",
@@ -224,6 +232,11 @@ const messages = {
           whatsapp: "WhatsApp",
           email: "Correo Electrónico",
           actions: "Acciones"
+        },
+        tooltips: {
+          createTicket: "Crear ticket",
+          editContact: "Editar contacto",
+          deleteContact: "Eliminar contacto"
         }
       },
       contactModal: {
@@ -313,7 +326,11 @@ const messages = {
         }
       },
       ticketsQueueSelect: {
-        placeholder: "Linhas"
+        placeholder: "Colas",
+        noQueues: "No hay colas disponibles",
+        filterTitle: "Filtrar por colas",
+        queue: "cola",
+        queues: "colas"
       },
       tickets: {
         toasts: {
@@ -354,16 +371,42 @@ const messages = {
         connectionTitle: "Conexión que se está utilizando actualmente.",
         noTicketsMessage:
           "No se encontraron tickets con este estado o término de búsqueda",
+        status: {
+          pending: "Pendiente",
+          closed: "Cerrado",
+          open: "Abierto"
+        },
+        messages: {
+          pending: "Esperando atención",
+          noMessages: "Sin mensajes"
+        },
         buttons: {
-          accept: "Acceptar"
+          accept: "Aceptar",
+          resolve: "Resolver"
         }
       },
       newTicketModal: {
         title: "Crear Ticket",
         fieldLabel: "Escribe para buscar un contacto",
         add: "Añadir",
+        queue: "Cola",
+        selectQueue: "Selecciona una cola",
+        connection: "Conexión",
+        selectConnection: "Selecciona una conexión",
+        contact: "Contacto",
         buttons: {
           ok: "Guardar",
+          cancel: "Cancelar"
+        }
+      },
+      acceptTicketModal: {
+        title: "Aceptar Ticket",
+        description:
+          "Para aceptar este ticket, debes seleccionar una cola primero.",
+        queue: "Cola",
+        selectQueue: "Selecciona una cola",
+        buttons: {
+          accept: "Aceptar Ticket",
           cancel: "Cancelar"
         }
       },
@@ -431,6 +474,10 @@ const messages = {
         },
         buttons: {
           add: "Agregar respuesta rápida"
+        },
+        tooltips: {
+          editQuickAnswer: "Editar respuesta rápida",
+          deleteQuickAnswer: "Eliminar respuesta rápida"
         },
         toasts: {
           deleted: "Respuesta rápida eliminada correctamente"
@@ -500,13 +547,12 @@ const messages = {
             reopen: "Reabrir",
             accept: "Aceptar"
           }
-        }
+        },
+        deletedMessage: "Este mensaje fue eliminado"
       },
       messagesInput: {
-        placeholderOpen:
-          "Escriba un mensaje o presione '' / '' para usar las respuestas rápidas registradas",
-        placeholderClosed:
-          "Vuelva a abrir o acepte este ticket para enviar un mensaje.",
+        placeholderOpen: "Escriba o presione '' / ''",
+        placeholderClosed: "Vuelva a abrir o acepte",
         signMessage: "Firmar"
       },
       contactDrawer: {

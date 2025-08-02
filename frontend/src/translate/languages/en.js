@@ -106,6 +106,14 @@ const messages = {
           newQr: "New QR CODE",
           connecting: "Connectiing"
         },
+        tooltips: {
+          qrCode: "QR Code",
+          start: "Start",
+          disconnect: "Disconnect",
+          restart: "Restart",
+          edit: "Edit",
+          delete: "Delete"
+        },
         toolTips: {
           disconnected: {
             title: "Failed to start WhatsApp session",
@@ -221,6 +229,11 @@ const messages = {
           whatsapp: "WhatsApp",
           email: "Email",
           actions: "Actions"
+        },
+        tooltips: {
+          createTicket: "Create ticket",
+          editContact: "Edit contact",
+          deleteContact: "Delete contact"
         }
       },
       contactModal: {
@@ -310,7 +323,11 @@ const messages = {
         }
       },
       ticketsQueueSelect: {
-        placeholder: "Queues"
+        placeholder: "Queues",
+        noQueues: "No queues available",
+        filterTitle: "Filter by queues",
+        queue: "queue",
+        queues: "queues"
       },
       tickets: {
         toasts: {
@@ -350,16 +367,41 @@ const messages = {
         noTicketsTitle: "Nothing here!",
         noTicketsMessage: "No tickets found with this status or search term.",
         connectionTitle: "Connection that is currently being used.",
+        status: {
+          pending: "Pending",
+          closed: "Closed",
+          open: "Open"
+        },
+        messages: {
+          pending: "Waiting for service",
+          noMessages: "No messages"
+        },
         buttons: {
-          accept: "Accept"
+          accept: "Accept",
+          resolve: "Resolve"
         }
       },
       newTicketModal: {
         title: "Create Ticket",
         fieldLabel: "Type to search for a contact",
         add: "Add",
+        queue: "Queue",
+        selectQueue: "Select a queue",
+        connection: "Connection",
+        selectConnection: "Select a connection",
+        contact: "Contact",
         buttons: {
           ok: "Save",
+          cancel: "Cancel"
+        }
+      },
+      acceptTicketModal: {
+        title: "Accept Ticket",
+        description: "To accept this ticket, you must select a queue first.",
+        queue: "Queue",
+        selectQueue: "Select a queue",
+        buttons: {
+          accept: "Accept Ticket",
           cancel: "Cancel"
         }
       },
@@ -428,6 +470,10 @@ const messages = {
         buttons: {
           add: "Add Quick Reply"
         },
+        tooltips: {
+          editQuickAnswer: "Edit quick answer",
+          deleteQuickAnswer: "Delete quick answer"
+        },
         toasts: {
           deleted: "Quick Reply deleted successfully."
         },
@@ -495,12 +541,12 @@ const messages = {
             reopen: "Reopen",
             accept: "Accept"
           }
-        }
+        },
+        deletedMessage: "This message was deleted"
       },
       messagesInput: {
-        placeholderOpen:
-          "Type a message or press ''/'' to use the registered quick responses",
-        placeholderClosed: "Reopen or accept this ticket to send a message.",
+        placeholderOpen: "Type or press ''/''",
+        placeholderClosed: "Reopen or accept",
         signMessage: "Sign"
       },
       contactDrawer: {
