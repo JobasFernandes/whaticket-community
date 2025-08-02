@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ChevronDown, Filter } from "lucide-react";
 import { i18n } from "../../translate/i18n.js";
 
@@ -8,6 +8,21 @@ const TicketsQueueSelect = ({
   onChange
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState({ right: false });
+  const buttonRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const dropdownWidth = 256;
+
+      const shouldOpenLeft =
+        rect.left > 200 || rect.left + dropdownWidth > viewportWidth - 50;
+
+      setDropdownPosition({ right: shouldOpenLeft });
+    }
+  }, [isOpen]);
 
   const handleToggleQueue = queueId => {
     const newSelected = selectedQueueIds.includes(queueId)
@@ -20,62 +35,75 @@ const TicketsQueueSelect = ({
     userQueues?.filter(queue => selectedQueueIds.includes(queue.id)) || [];
 
   return (
-    <div className="relative w-32">
+    <div className="relative">
       {/* Dropdown Button */}
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-          <Filter className="h-3.5 w-3.5 text-gray-400" />
-        </div>
         <button
+          ref={buttonRef}
           type="button"
           onClick={() => setIsOpen(!isOpen)}
           className="
-            block w-full pl-7 pr-7 py-1.5 
+            flex items-center gap-2 px-3 py-2
             border border-gray-300 dark:border-gray-600 
-            rounded-md shadow-sm
-            focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500
-            bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+            rounded-lg shadow-sm hover:shadow-md
+            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+            bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200
             transition-all duration-200
-            text-xs text-left
+            text-sm font-medium min-w-[120px]
           "
         >
-          {i18n.t("ticketsQueueSelect.placeholder")}
-        </button>
-        <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+          <Filter className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+          <span className="flex-1 text-left">
+            {selectedQueueIds.length > 0
+              ? `${selectedQueueIds.length} ${selectedQueueIds.length === 1 ? i18n.t("ticketsQueueSelect.queue") : i18n.t("ticketsQueueSelect.queues")}`
+              : i18n.t("ticketsQueueSelect.placeholder")}
+          </span>
           <ChevronDown
-            className={`h-3.5 w-3.5 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
+            className={`h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
           />
-        </div>
+        </button>
 
         {/* Dropdown Menu */}
         {isOpen && (
-          <div className="absolute z-10 mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto">
+          <div
+            className={`absolute z-50 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-auto`}
+            style={{
+              ...(dropdownPosition.right
+                ? { right: 0, left: "auto" }
+                : { left: 0, right: "auto" })
+            }}
+          >
             {!userQueues || userQueues.length === 0 ? (
-              <div className="px-3 py-2 text-xs text-gray-500 dark:text-gray-400">
-                Nenhuma fila disponível
+              <div className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
+                {i18n.t("ticketsQueueSelect.noQueues")}
               </div>
             ) : (
-              userQueues.map(queue => (
-                <label
-                  key={queue.id}
-                  className="flex items-center px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedQueueIds.includes(queue.id)}
-                    onChange={() => handleToggleQueue(queue.id)}
-                    className="w-3.5 h-3.5 rounded border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:ring-1"
-                    style={{ accentColor: queue.color }}
-                  />
-                  <span className="ml-2 text-xs text-gray-900 dark:text-white flex items-center gap-2">
-                    <div
-                      className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: queue.color }}
+              <div className="py-2">
+                <div className="px-4 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide border-b border-gray-200 dark:border-gray-600">
+                  {i18n.t("ticketsQueueSelect.filterTitle")}
+                </div>
+                {userQueues.map(queue => (
+                  <label
+                    key={queue.id}
+                    className="flex items-center px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedQueueIds.includes(queue.id)}
+                      onChange={() => handleToggleQueue(queue.id)}
+                      className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:ring-2"
+                      style={{ accentColor: queue.color }}
                     />
-                    {queue.name}
-                  </span>
-                </label>
-              ))
+                    <span className="ml-3 text-sm text-gray-900 dark:text-white flex items-center gap-2">
+                      <div
+                        className="w-3 h-3 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: queue.color }}
+                      />
+                      {queue.name}
+                    </span>
+                  </label>
+                ))}
+              </div>
             )}
           </div>
         )}
@@ -83,7 +111,7 @@ const TicketsQueueSelect = ({
 
       {/* Overlay to close dropdown */}
       {isOpen && (
-        <div className="fixed inset-0 z-0" onClick={() => setIsOpen(false)} />
+        <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
       )}
     </div>
   );
