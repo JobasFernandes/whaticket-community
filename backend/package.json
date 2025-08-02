@@ -11,6 +11,13 @@
     "pretest": "NODE_ENV=test sequelize db:migrate && NODE_ENV=test sequelize db:seed:all",
     "test": "NODE_ENV=test jest",
     "posttest": "NODE_ENV=test sequelize db:migrate:undo:all",
+    "format": "prettier --write \"src/**/*.{ts,js,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,js,json}\"",
+    "format:fix": "prettier --write \"src/**/*.{ts,js,json}\" && eslint --fix \"src/**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint --fix \"src/**/*.ts\"",
+    "db:create": "sequelize db:create",
+    "db:drop": "sequelize db:drop",
     "db:migrate": "sequelize db:migrate",
     "db:seed": "sequelize db:seed:all"
   },

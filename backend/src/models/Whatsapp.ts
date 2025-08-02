@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Table,
   Column,
@@ -28,6 +29,9 @@ class Whatsapp extends Model<Whatsapp> {
   @Unique
   @Column(DataType.TEXT)
   name: string;
+
+  @Column(DataType.TEXT)
+  number: string;
 
   @Column(DataType.TEXT)
   session: string;
